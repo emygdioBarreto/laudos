@@ -59,7 +59,7 @@ public class LaudoService {
                         laudo.setObservacao(laudoDTO.observacao());
                         laudo.setTipoExame(laudoDTO.tipoExame());
                     } catch (ParseException e) {
-                        throw new RuntimeException();
+                        throw new IllegalArgumentException("Falha na conversão de datas");
                     }
                     return mapper.toDTO(repository.save(laudo));
                 }).orElseThrow(() -> new RecordNotFoundException(id));

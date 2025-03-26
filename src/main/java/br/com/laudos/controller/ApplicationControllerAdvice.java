@@ -29,10 +29,15 @@ public class ApplicationControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException ex) {
         if (ex != null && ex.getRequiredType() != null) {
-            String type = ex.getRequiredType().getName();
+            String type = "";
+            try {
+                type = ex.getRequiredType().getName();
+            } catch (Exception e) {
+                throw new RecordNotFoundException(e.getMessage());
+            }
             String[] typeParts = type.split("\\.");
-            String typeName = typeParts[typeParts.length -1];
-            return  ex.getName() + " should be of type " + typeName;
+            String typeName = typeParts[typeParts.length - 1];
+            return ex.getName() + " should be of type " + typeName;
         }
         return "Argument type not valid";
     }
