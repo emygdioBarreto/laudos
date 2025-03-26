@@ -28,5 +28,4 @@ public class Droga {
     @Length(min = 5, max = 100)
     @Column(name = "droga")
     private String nomedroga;
-
- }
+}
