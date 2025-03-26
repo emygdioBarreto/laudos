@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 class LocalServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Local não encontrado pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private LocalService service;
@@ -129,14 +129,14 @@ class LocalServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de local com sucesso.")
     void listarTodasFrasesLocalComSucesso() {
-        Pageable pageLocal = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageLocal = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Local()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(local1));
         when(mapper.toDTO(local1)).thenReturn(local1DTO);
 
-        List<Local> localList = repository.findAll();
         List<LocalDTO> locais = new ArrayList<>();
-        locais.add(mapper.toDTO(local1));
+        Local localList = repository.findAll().get(0);
+        locais.add(mapper.toDTO(localList));
 
         pageDTO = new LocalPageDTO(locais,
                 pageLocal.getPageNumber(),
@@ -145,8 +145,8 @@ class LocalServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), LocalPageDTO.class);
         assertEquals(pageDTO.locais().get(0).getClass(), LocalDTO.class);
-        assertEquals(page, pageDTO.totalPages());
-        assertEquals(size, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(local1DTO.id(), pageDTO.locais().get(0).id());
         assertEquals(local1DTO.descricao(), pageDTO.locais().get(0).descricao());

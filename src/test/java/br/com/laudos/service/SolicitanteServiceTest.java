@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 class SolicitanteServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de solicitante não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private SolicitanteService service;
@@ -129,14 +129,14 @@ class SolicitanteServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de solicitante com sucesso.")
     void listarTodasFrasesSolicitanteComSucesso() {
-        Pageable pageSolicitante = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageSolicitante = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Solicitante()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(solicitante1));
         when(mapper.toDTO(solicitante1)).thenReturn(solicitante1DTO);
 
-        List<Solicitante> solicitanteList = repository.findAll();
         List<SolicitanteDTO> solicitantes = new ArrayList<>();
-        solicitantes.add(mapper.toDTO(solicitante1));
+        Solicitante solicitanteList = repository.findAll().get(0);
+        solicitantes.add(mapper.toDTO(solicitanteList));
 
         pageDTO = new SolicitantePageDTO(solicitantes,
                 pageSolicitante.getPageNumber(),
@@ -145,8 +145,8 @@ class SolicitanteServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), SolicitantePageDTO.class);
         assertEquals(pageDTO.solicitantes().get(0).getClass(), SolicitanteDTO.class);
-        assertEquals(page, pageDTO.totalPages());
-        assertEquals(size, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(solicitante1DTO.id(), pageDTO.solicitantes().get(0).id());
         assertEquals(solicitante1DTO.medicoSolicitante(), pageDTO.solicitantes().get(0).medicoSolicitante());

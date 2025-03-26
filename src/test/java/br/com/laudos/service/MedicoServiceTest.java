@@ -130,12 +130,12 @@ class MedicoServiceTest {
     void listarTodasFrasesMedicoComSucesso() {
         Pageable pageMedico = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "crm"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Medico()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(medico1));
         when(mapper.toDTO(medico1)).thenReturn(medico1DTO);
 
-        List<Medico> medicoList = repository.findAll();
         List<MedicoDTO> medicos = new ArrayList<>();
-        medicos.add(mapper.toDTO(medico1));
+        Medico medicoList = repository.findAll().get(0);
+        medicos.add(mapper.toDTO(medicoList));
 
         pageDTO = new MedicoPageDTO(medicos,
                 pageMedico.getPageNumber(),

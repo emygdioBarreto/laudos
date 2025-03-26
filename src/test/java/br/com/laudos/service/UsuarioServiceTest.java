@@ -126,12 +126,12 @@ class UsuarioServiceTest {
     @Test
     @DisplayName(value = "Listar todos os usuários com sucesso.")
     void listarTodosUsuariosComSucesso() {
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Usuario()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(usuario1));
         when(mapper.toDTO(usuario1)).thenReturn(usuario1DTO);
 
-        List<Usuario> usuarioList = repository.findAll();
         List<UsuarioDTO> usuarios = new ArrayList<>();
-        usuarios.add(mapper.toDTO(usuario1));
+        Usuario usuarioList = repository.findAll().get(0);
+        usuarios.add(mapper.toDTO(usuarioList));
 
         assertNotNull(usuarios);
         assertEquals(usuarios.get(0).getClass(), UsuarioDTO.class);

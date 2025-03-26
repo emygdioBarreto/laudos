@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 class TipoExameServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Tipo de exame não encontrado pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private TipoExameService service;
@@ -147,14 +147,14 @@ class TipoExameServiceTest {
     @Test
     @DisplayName(value = "Listar todos os tipo de exame com sucesso.")
     void listarTodasFrasesTipoExameComSucesso() {
-        Pageable pageTipoExame = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageTipoExame = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new TipoExame()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(tipoExame1));
         when(mapper.toDTO(tipoExame1)).thenReturn(tipoExame1DTO);
 
-        List<TipoExame> tipoExameList = repository.findAll();
         List<TipoExameDTO> tipoexames = new ArrayList<>();
-        tipoexames.add(mapper.toDTO(tipoExame1));
+        TipoExame tipoExameList = repository.findAll().get(0);
+        tipoexames.add(mapper.toDTO(tipoExameList));
 
         pageDTO = new TipoExamePageDTO(tipoexames,
                 pageTipoExame.getPageNumber(),
@@ -163,8 +163,8 @@ class TipoExameServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), TipoExamePageDTO.class);
         assertEquals(pageDTO.tipoexames().get(0).getClass(), TipoExameDTO.class);
-        assertEquals(page, pageDTO.totalPages());
-        assertEquals(size, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(tipoExame1DTO.id(), pageDTO.tipoexames().get(0).id());
         assertEquals(tipoExame1DTO.descricao(), pageDTO.tipoexames().get(0).descricao());

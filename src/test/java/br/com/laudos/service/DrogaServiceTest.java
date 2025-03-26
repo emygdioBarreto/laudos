@@ -32,8 +32,8 @@ import static org.mockito.Mockito.*;
 class DrogaServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de droga não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private DrogaService service;
@@ -127,24 +127,24 @@ class DrogaServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de drogas com sucesso.")
     void listarTodasFrasesDrogaComSucesso() {
-        Pageable pageDroga = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageDroga = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
         when(repository.findAll()).thenReturn(Collections.singletonList(droga1));
         when(mapper.toDTO(droga1)).thenReturn(droga1DTO);
 
-        List<Droga> drogas = repository.findAll();
-        List<DrogaDTO> drogasDTO = new ArrayList<>();
-        drogasDTO.add(mapper.toDTO(droga1));
+        List<DrogaDTO> drogas = new ArrayList<>();
+        Droga drogaList = repository.findAll().get(0);
+        drogas.add(mapper.toDTO(drogaList));
 
-        pageDTO = new DrogaPageDTO(drogasDTO,
+        pageDTO = new DrogaPageDTO(drogas,
                 pageDroga.getPageNumber(),
                 pageDroga.getPageSize());
 
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), DrogaPageDTO.class);
         assertEquals(pageDTO.drogas().get(0).getClass(), DrogaDTO.class);
-        assertEquals(0, pageDTO.totalPages());
-        assertEquals(10, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(droga1DTO.id(), pageDTO.drogas().get(0).id());
         assertEquals(droga1DTO.nomedroga(), pageDTO.drogas().get(0).nomedroga());

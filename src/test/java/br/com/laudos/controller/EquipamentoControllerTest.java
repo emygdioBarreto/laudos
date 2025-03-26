@@ -102,27 +102,7 @@ class EquipamentoControllerTest {
 
         assertNotNull(response);
         assertEquals(EquipamentoDTO.class, equipamento1DTO.getClass());
-        assertEquals(equipamento1DTO.id(), response.id());
-        assertEquals(equipamento1DTO.descricao(), response.descricao());
-        assertEquals(equipamento1DTO.superior(), response.superior());
-        assertEquals(equipamento1DTO.inferior(), response.inferior());
-        assertEquals(equipamento1DTO.direita(), response.direita());
-        assertEquals(equipamento1DTO.esquerda(), response.esquerda());
-        assertEquals(equipamento1DTO.modLaudo(), response.modLaudo());
-        assertEquals(equipamento1DTO.cidade(), response.cidade());
-        assertEquals(equipamento1DTO.ordena(), response.ordena());
-
-        assertNotNull(response);
-        assertEquals(EquipamentoDTO.class, equipamento1DTO.getClass());
-        assertEquals(equipamento1DTO.id(), response.id());
-        assertEquals(equipamento1DTO.descricao(), response.descricao());
-        assertEquals(equipamento1DTO.superior(), response.superior());
-        assertEquals(equipamento1DTO.inferior(), response.inferior());
-        assertEquals(equipamento1DTO.direita(), response.direita());
-        assertEquals(equipamento1DTO.esquerda(), response.esquerda());
-        assertEquals(equipamento1DTO.modLaudo(), response.modLaudo());
-        assertEquals(equipamento1DTO.cidade(), response.cidade());
-        assertEquals(equipamento1DTO.ordena(), response.ordena());
+        assertEquipamentoDTO(equipamento1DTO, response);
 
         assertThat(response).usingRecursiveComparison().isEqualTo(equipamento1DTO);
         assertThat(response.id()).isEqualTo(equipamento1DTO.id());
@@ -180,15 +160,7 @@ class EquipamentoControllerTest {
 
         assertNotNull(response);
         assertEquals(EquipamentoDTO.class, response.getClass());
-        assertEquals(equipamento1DTO.id(), response.id());
-        assertEquals(equipamento1DTO.descricao(), response.descricao());
-        assertEquals(equipamento1DTO.superior(), response.superior());
-        assertEquals(equipamento1DTO.inferior(), response.inferior());
-        assertEquals(equipamento1DTO.direita(), response.direita());
-        assertEquals(equipamento1DTO.esquerda(), response.esquerda());
-        assertEquals(equipamento1DTO.modLaudo(), response.modLaudo());
-        assertEquals(equipamento1DTO.cidade(), response.cidade());
-        assertEquals(equipamento1DTO.ordena(), response.ordena());
+        assertEquipamentoDTO(equipamento1DTO, response);
     }
 
     @Test
@@ -203,4 +175,15 @@ class EquipamentoControllerTest {
             assertEquals(REGISTRO_NAO_ENCONTRADO, ex.getMessage());
         }
     }
+
+    private void assertEquipamentoDTO(EquipamentoDTO equipamento1DTO, EquipamentoDTO response) {
+        assertEquals(equipamento1DTO.id(), response.id());
+        assertEquals(equipamento1DTO.descricao(), response.descricao());
+        assertEquals(equipamento1DTO.superior(), response.superior());
+        assertEquals(equipamento1DTO.inferior(), response.inferior());
+        assertEquals(equipamento1DTO.direita(), response.direita());
+        assertEquals(equipamento1DTO.esquerda(), response.esquerda());
+        assertEquals(equipamento1DTO.modLaudo(), response.modLaudo());
+        assertEquals(equipamento1DTO.cidade(), response.cidade());
+        assertEquals(equipamento1DTO.ordena(), response.ordena());    }
 }

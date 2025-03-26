@@ -43,7 +43,6 @@ class ObservacaoClinicaControllerTest {
 
     private ObservacaoClinica observacaoClinica;
     private ObservacaoClinicaDTO observacaoClinicaDTO;
-    private ObservacaoClinica observacaoClinica1;
     private ObservacaoClinicaDTO observacaoClinica1DTO;
 
     private final List<ObservacaoClinicaDTO> obsClinicas = new ArrayList<>();
@@ -55,7 +54,6 @@ class ObservacaoClinicaControllerTest {
 
         observacaoClinica = new ObservacaoClinica(null, "Teste de gravação de frase de ObservacaoClinica");
         observacaoClinicaDTO = new ObservacaoClinicaDTO(null, "Teste de gravação de frase de ObservacaoClinica");
-        observacaoClinica1 = new ObservacaoClinica(6, "Gastrite ?");
         observacaoClinica1DTO = new ObservacaoClinicaDTO(6, "Gastrite ? Teste!");
 
         obsClinicas.add(observacaoClinicaDTO);

@@ -32,8 +32,8 @@ import static org.mockito.Mockito.*;
 class EquipamentoServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de conclusão não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private EquipamentoService service;
@@ -134,14 +134,14 @@ class EquipamentoServiceTest {
     @Test
     @DisplayName(value = "Listar todos os equipamentos com sucesso.")
     void listarTodosEquipamentosComSucesso() {
-        Pageable pageEquipamento = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageEquipamento = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Equipamento()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(equipamento1));
         when(mapper.toDTO(equipamento1)).thenReturn(equipamento1DTO);
 
-        List<Equipamento> equipamentoList = repository.findAll();
         List<EquipamentoDTO> equipamentos = new ArrayList<>();
-        equipamentos.add(mapper.toDTO(equipamento1));
+        Equipamento equipamentoList = repository.findAll().get(0);
+        equipamentos.add(mapper.toDTO(equipamentoList));
 
         pageDTO = new EquipamentoPageDTO(equipamentos,
                 pageEquipamento.getPageNumber(),
@@ -150,8 +150,8 @@ class EquipamentoServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), EquipamentoPageDTO.class);
         assertEquals(pageDTO.equipamentos().get(0).getClass(), EquipamentoDTO.class);
-        assertEquals(0, pageDTO.totalPages());
-        assertEquals(10, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(equipamento1DTO.id(), pageDTO.equipamentos().get(0).id());
         assertEquals(equipamento1DTO.descricao(), pageDTO.equipamentos().get(0).descricao());

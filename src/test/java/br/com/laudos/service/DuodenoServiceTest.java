@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +32,8 @@ import static org.mockito.Mockito.*;
 class DuodenoServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de duodeno não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private DuodenoService service;
@@ -126,15 +127,14 @@ class DuodenoServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de duodeno com sucesso.")
     void listarTodasFrasesDuodenoComSucesso() {
-        Pageable pageDuodeno = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
-        List<Duodeno> duodenoList = new ArrayList<>();
+        Pageable pageDuodeno = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(duodenoList);
+        when(repository.findAll()).thenReturn(Collections.singletonList(duodeno1));
         when(mapper.toDTO(duodeno1)).thenReturn(duodeno1DTO);
 
-        duodenoList = repository.findAll();
         List<DuodenoDTO> duodenos = new ArrayList<>();
-        duodenos.add(mapper.toDTO(duodeno1));
+        Duodeno duodenoList = repository.findAll().get(0);
+        duodenos.add(mapper.toDTO(duodenoList));
 
         pageDTO = new DuodenoPageDTO(duodenos,
                 pageDuodeno.getPageNumber(),
@@ -143,8 +143,8 @@ class DuodenoServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), DuodenoPageDTO.class);
         assertEquals(pageDTO.duodenos().get(0).getClass(), DuodenoDTO.class);
-        assertEquals(page, pageDTO.totalPages());
-        assertEquals(size, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(duodeno1DTO.id(), pageDTO.duodenos().get(0).id());
         assertEquals(duodeno1DTO.descricao(), pageDTO.duodenos().get(0).descricao());

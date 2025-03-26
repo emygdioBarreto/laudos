@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 class ObservacaoClinicaServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de observação Clínica não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private ObservacaoClinicaService service;
@@ -129,14 +129,14 @@ class ObservacaoClinicaServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de observação Clínica com sucesso.")
     void listarTodasFrasesObservacaoClinicaComSucesso() {
-        Pageable pageObservacaoClinica = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageObservacaoClinica = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new ObservacaoClinica()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(observacaoClinica1));
         when(mapper.toDTO(observacaoClinica1)).thenReturn(observacaoClinica1DTO);
 
-        List<ObservacaoClinica> observacaoClinicaList = repository.findAll();
         List<ObservacaoClinicaDTO> observacoesClinicas = new ArrayList<>();
-        observacoesClinicas.add(mapper.toDTO(observacaoClinica1));
+        ObservacaoClinica observacaoClinicaList = repository.findAll().get(0);
+        observacoesClinicas.add(mapper.toDTO(observacaoClinicaList));
 
         pageDTO = new ObservacaoClinicaPageDTO(observacoesClinicas,
                 pageObservacaoClinica.getPageNumber(),
@@ -145,8 +145,8 @@ class ObservacaoClinicaServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), ObservacaoClinicaPageDTO.class);
         assertEquals(pageDTO.observacoesClinicas().get(0).getClass(), ObservacaoClinicaDTO.class);
-        assertEquals(page, pageDTO.totalPages());
-        assertEquals(size, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(observacaoClinica1DTO.id(), pageDTO.observacoesClinicas().get(0).id());
         assertEquals(observacaoClinica1DTO.descricao(), pageDTO.observacoesClinicas().get(0).descricao());

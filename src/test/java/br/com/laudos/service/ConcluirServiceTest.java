@@ -27,8 +27,8 @@ import static org.mockito.Mockito.*;
 class ConcluirServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de conclusão não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private ConcluirService service;
@@ -127,14 +127,14 @@ class ConcluirServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de conclusão com sucesso.")
     void listarTodasFrasesConclusaoComSucesso() {
-        Pageable pageConcluir = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageConcluir = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Concluir()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(concluir1));
         when(mapper.toDTO(concluir1)).thenReturn(concluir1DTO);
 
-        List<Concluir> concluirList = repository.findAll();
         List<ConcluirDTO> conclusoes = new ArrayList<>();
-        conclusoes.add(mapper.toDTO(concluir1));
+        Concluir concluirList = repository.findAll().get(0);
+        conclusoes.add(mapper.toDTO(concluirList));
 
         pageDTO = new ConcluirPageDTO(conclusoes,
                 pageConcluir.getPageNumber(),
@@ -143,8 +143,8 @@ class ConcluirServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), ConcluirPageDTO.class);
         assertEquals(pageDTO.conclusoes().get(0).getClass(), ConcluirDTO.class);
-        assertEquals(0, pageDTO.totalPages());
-        assertEquals(10, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(concluir1DTO.id(), pageDTO.conclusoes().get(0).id());
         assertEquals(concluir1DTO.conclusao(), pageDTO.conclusoes().get(0).conclusao());

@@ -32,8 +32,8 @@ import static org.mockito.Mockito.*;
 class EsofagoServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de esôfago não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private EsofagoService service;
@@ -127,14 +127,14 @@ class EsofagoServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de esôfago com sucesso.")
     void listarTodasFrasesEsofagoComSucesso() {
-        Pageable pageEsofago = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageEsofago = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Esofago()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(esofago1));
         when(mapper.toDTO(esofago1)).thenReturn(esofago1DTO);
 
-        List<Esofago> esofagoList = repository.findAll();
         List<EsofagoDTO> esofagos = new ArrayList<>();
-        esofagos.add(mapper.toDTO(esofago1));
+        Esofago esofagoList = repository.findAll().get(0);
+        esofagos.add(mapper.toDTO(esofagoList));
 
         pageDTO = new EsofagoPageDTO(esofagos,
                 pageEsofago.getPageNumber(),
@@ -143,8 +143,8 @@ class EsofagoServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), EsofagoPageDTO.class);
         assertEquals(pageDTO.esofagos().get(0).getClass(), EsofagoDTO.class);
-        assertEquals(0, pageDTO.totalPages());
-        assertEquals(10, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(esofago1DTO.id(), pageDTO.esofagos().get(0).id());
         assertEquals(esofago1DTO.descricao(), pageDTO.esofagos().get(0).descricao());

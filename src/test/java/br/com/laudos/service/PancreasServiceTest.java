@@ -131,14 +131,14 @@ class PancreasServiceTest {
     void listarTodasFrasesPancreasComSucesso() {
         Pageable pagePancreas = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Pancreas()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(pancreas1));
         when(mapper.toDTO(pancreas1)).thenReturn(pancreas1DTO);
 
-        List<Pancreas> pancreasList = repository.findAll();
-        List<PancreasDTO> pancreas = new ArrayList<>();
-        pancreas.add(mapper.toDTO(pancreas1));
+        List<PancreasDTO> pancreass = new ArrayList<>();
+        Pancreas pancreasList = repository.findAll().get(0);
+        pancreass.add(mapper.toDTO(pancreasList));
 
-        pageDTO = new PancreasPageDTO(pancreas,
+        pageDTO = new PancreasPageDTO(pancreass,
                 pagePancreas.getPageNumber(),
                 pagePancreas.getPageSize());
 

@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 class IntestinoServiceTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de intestino não encontrada pelo ID informado.";
-    private static final int size = 10;
-    private static final int page = 0;
+    private static final int PAGE = 0;
+    private static final int SIZE = 10;
 
     @InjectMocks
     private IntestinoService service;
@@ -129,14 +129,14 @@ class IntestinoServiceTest {
     @Test
     @DisplayName(value = "Listar todas as frases de intestino com sucesso.")
     void listarTodasFrasesIntestinoComSucesso() {
-        Pageable pageIntestino = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id"));
+        Pageable pageIntestino = PageRequest.of(PAGE, SIZE, Sort.by(Sort.Direction.ASC, "id"));
 
-        when(repository.findAll()).thenReturn(Collections.singletonList(new Intestino()));
+        when(repository.findAll()).thenReturn(Collections.singletonList(intestino1));
         when(mapper.toDTO(intestino1)).thenReturn(intestino1DTO);
 
-        List<Intestino> intestinoList = repository.findAll();
         List<IntestinoDTO> intestinos = new ArrayList<>();
-        intestinos.add(mapper.toDTO(intestino1));
+        Intestino intestinoList = repository.findAll().get(0);
+        intestinos.add(mapper.toDTO(intestinoList));
 
         pageDTO = new IntestinoPageDTO(intestinos,
                 pageIntestino.getPageNumber(),
@@ -145,8 +145,8 @@ class IntestinoServiceTest {
         assertNotNull(pageDTO);
         assertEquals(pageDTO.getClass(), IntestinoPageDTO.class);
         assertEquals(pageDTO.intestinos().get(0).getClass(), IntestinoDTO.class);
-        assertEquals(0, pageDTO.totalPages());
-        assertEquals(10, pageDTO.totalElements());
+        assertEquals(PAGE, pageDTO.totalPages());
+        assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(intestino1DTO.id(), pageDTO.intestinos().get(0).id());
         assertEquals(intestino1DTO.descricao(), pageDTO.intestinos().get(0).descricao());
