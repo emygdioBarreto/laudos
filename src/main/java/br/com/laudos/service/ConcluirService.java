@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -19,15 +20,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ConcluirService {
 
     private final ConcluirRepository repository;
     private final ConcluirMapper mapper;
-
-    public ConcluirService(ConcluirRepository repository, ConcluirMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     public ConcluirDTO salvar(@NotNull @Valid ConcluirDTO concluirDTO) {
         boolean fraseJaExiste = repository.existsByConclusao(concluirDTO.conclusao());

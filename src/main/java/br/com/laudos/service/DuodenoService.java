@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,15 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class DuodenoService {
 
     private final DuodenoRepository repository;
     private final DuodenoMapper mapper;
-
-    public DuodenoService(DuodenoRepository repository, DuodenoMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     public DuodenoDTO salvar(@Valid @NotNull DuodenoDTO duodenoDTO) {
         return mapper.toDTO(repository.save(mapper.toEntity(duodenoDTO)));

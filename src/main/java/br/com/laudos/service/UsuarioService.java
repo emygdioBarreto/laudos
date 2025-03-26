@@ -6,20 +6,17 @@ import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.repository.UsuarioRepository;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository repository;
     private final UsuarioMapper mapper;
-
-    public UsuarioService(UsuarioRepository repository, UsuarioMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     public UsuarioDTO createUser(UsuarioDTO userDto) {
         return mapper.toDTO(repository.save(mapper.toEntity(userDto)));

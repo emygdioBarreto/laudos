@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,15 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TipoExameService {
 
     private final TipoExameRepository repository;
     private final TipoExameMapper mapper;
-
-    public TipoExameService(TipoExameRepository repository, TipoExameMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     public TipoExameDTO salvar(@Valid @NotNull TipoExameDTO tipoExameDTO) {
         return mapper.toDTO(repository.save(mapper.toEntity(tipoExameDTO)));

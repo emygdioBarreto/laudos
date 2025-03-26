@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,15 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProcedenciaService {
 
     private final ProcedenciaRepository repository;
     private final ProcedenciaMapper mapper;
-
-    public ProcedenciaService(ProcedenciaRepository repository, ProcedenciaMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     public ProcedenciaDTO salvar(@Valid @NotNull ProcedenciaDTO procedenciaDTO) {
         return mapper.toDTO(repository.save(mapper.toEntity(procedenciaDTO)));

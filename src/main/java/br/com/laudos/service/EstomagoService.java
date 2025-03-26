@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -18,15 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EstomagoService {
 
     private final EstomagoRepository repository;
     private final EstomagoMapper mapper;
-
-    public EstomagoService(EstomagoRepository repository, EstomagoMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
 
     public EstomagoDTO salvar(@Valid @NotNull EstomagoDTO estomagoDTO) {
         return mapper.toDTO(repository.save(mapper.toEntity(estomagoDTO)));
