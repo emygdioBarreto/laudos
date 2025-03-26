@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,16 +20,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/usuario")
+@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @Tag(name = "usuario", description = "Método para criação, manutenção e remoção de um usuário no sistema")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class UsuarioController {
 
     private final UsuarioService service;
-
-    public UsuarioController(UsuarioService service) {
-        this.service = service;
-    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping

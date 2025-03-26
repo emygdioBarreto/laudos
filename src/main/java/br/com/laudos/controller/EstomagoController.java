@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,16 +22,13 @@ import org.springframework.web.bind.annotation.*;
 @Valid
 @RestController
 @RequestMapping("/api/estomagos")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Estômago", description = "Método para salvar, editar, listar e remover dados de frases de Estômago")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class EstomagoController {
 
     private final EstomagoService service;
-
-    public EstomagoController(EstomagoService service) {
-        this.service = service;
-    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")

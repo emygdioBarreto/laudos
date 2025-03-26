@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,16 +23,13 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/api/locais")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Local", description = "Método para salvar, editar, listar e remover dados do local de realização do exame")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class LocalController {
 
     private final LocalService service;
-
-    public LocalController(LocalService service) {
-        this.service = service;
-    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")

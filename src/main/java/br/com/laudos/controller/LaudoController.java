@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,16 +25,13 @@ import java.text.ParseException;
 @Validated
 @RestController
 @RequestMapping("/api/laudos")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Laudos", description = "Método para salvar, editar, listar e remover Laudos")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class LaudoController {
 
     private final LaudoService service;
-
-    public LaudoController(LaudoService service) {
-        this.service = service;
-    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")

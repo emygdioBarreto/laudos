@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,16 +23,13 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/api/pancreas")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Pancreas", description = "Método para salvar, editar, listar e remover dados de frases de Pancreas")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class PancreasController {
 
     private final PancreasService service;
-
-    public PancreasController(PancreasService service) {
-        this.service = service;
-    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")

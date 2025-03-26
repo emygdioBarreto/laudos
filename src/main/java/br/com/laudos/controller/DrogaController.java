@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +24,13 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 @RestController
 @RequestMapping("/api/drogas")
+@RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Drogas", description = "Método para salvar, editar, listar e remover nomes de drogas utilizadas")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
 public class DrogaController {
 
     private final DrogaService service;
-
-    @Autowired
-    public DrogaController(DrogaService service) {
-        this.service = service;
-    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")
