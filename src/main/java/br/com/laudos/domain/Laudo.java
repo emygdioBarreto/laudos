@@ -17,7 +17,6 @@ public class Laudo {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_laudo_seq")
     @SequenceGenerator(name = "id_laudo_seq", allocationSize = 1)
     @Column(name = "id_laudo")
-    @OrderBy("id ASC")
     private Long id;
 
     @Column(name = "data", nullable = false)
