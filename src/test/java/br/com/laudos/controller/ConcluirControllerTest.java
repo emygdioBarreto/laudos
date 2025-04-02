@@ -102,8 +102,6 @@ class ConcluirControllerTest {
     void ListarTodasFrasesConclusaoComSucesso() {
         when(service.findAll(anyInt(),anyInt())).thenReturn(concluirPageDTO);
 
-        conclusoes.add(concluirDTO);
-
         ConcluirPageDTO response = service.findAll(PAGE, SIZE);
 
         assertNotNull(response);
