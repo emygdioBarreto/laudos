@@ -22,7 +22,7 @@ public class Resumo {
 
     @NotNull
     @NotBlank
-    @Length(min = 5, max = 100)
+    @Length(min = 5, max = 200)
     @Column(name = "descricao")
     private String descricao;
 }

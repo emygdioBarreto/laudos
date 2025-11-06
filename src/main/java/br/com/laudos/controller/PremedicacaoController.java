@@ -55,9 +55,10 @@ public class PremedicacaoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public PremedicacaoDTO update(@PathVariable @NotNull @Positive Integer id,
-                                  @RequestBody @Valid @NotNull PremedicacaoDTO premedicacaoDTO) {
-        return service.update(id, premedicacaoDTO);
+    public ResponseEntity<PremedicacaoDTO> update(
+            @PathVariable @NotNull @Positive Integer id,
+            @RequestBody @Valid @NotNull PremedicacaoDTO premedicacaoDTO) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, premedicacaoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +86,10 @@ public class PremedicacaoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public PremedicacaoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                                       @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page,pageSize);
+    public ResponseEntity<PremedicacaoPageDTO> findAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive int pageSize) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page,pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +102,7 @@ public class PremedicacaoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public PremedicacaoDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<PremedicacaoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

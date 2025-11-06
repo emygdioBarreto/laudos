@@ -22,7 +22,7 @@ public class ObservacaoClinica {
 
     @NotNull
     @NotBlank
-    @Length(min = 5, max = 100)
+    @Length(min = 5, max = 140)
     @Column(name = "observacao_clinica")
     private String descricao;
 }

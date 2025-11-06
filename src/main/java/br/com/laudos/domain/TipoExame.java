@@ -22,7 +22,7 @@ public class TipoExame {
 
     @NotNull
     @NotBlank
-    @Length(max = 50)
+    @Length(max = 150)
     @Column(name = "tipoexame")
     private String descricao;
 

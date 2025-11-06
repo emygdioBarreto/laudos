@@ -72,12 +72,12 @@ class PremedicacaoControllerTest {
         assertNotNull(response);
         assertEquals(PremedicacaoDTO.class, response.getClass());
         assertEquals(premedicacao.getId(), response.id());
-        assertEquals(premedicacao.getAnalgesia(), response.analgesia());
+        assertEquals(premedicacao.getPremedicacao(), response.premedicacao());
 
         verify(mapper, times(1)).toDTO(premedicacao);
 
         assertThat(response).usingRecursiveComparison().isEqualTo(premedicacaoDTO);
-        assertThat(response.analgesia()).isEqualTo(premedicacaoDTO.analgesia());
+        assertThat(response.premedicacao()).isEqualTo(premedicacaoDTO.premedicacao());
     }
 
     @Test
@@ -90,10 +90,10 @@ class PremedicacaoControllerTest {
         assertNotNull(response);
         assertEquals(PremedicacaoDTO.class, premedicacao1DTO.getClass());
         assertEquals(premedicacao1DTO.id(), response.id());
-        assertEquals(premedicacao1DTO.analgesia(), response.analgesia());
+        assertEquals(premedicacao1DTO.premedicacao(), response.premedicacao());
 
         assertThat(response).usingRecursiveComparison().isEqualTo(premedicacao1DTO);
-        assertThat(response.analgesia()).isEqualTo(premedicacao1DTO.analgesia());
+        assertThat(response.premedicacao()).isEqualTo(premedicacao1DTO.premedicacao());
     }
 
     @Test
@@ -121,7 +121,7 @@ class PremedicacaoControllerTest {
         assertEquals(SIZE, response.totalElements());
 
         assertEquals(premedicacaoDTO.id(), response.premedicacoes().get(0).id());
-        assertEquals(premedicacaoDTO.analgesia(), response.premedicacoes().get(0).analgesia());
+        assertEquals(premedicacaoDTO.premedicacao(), response.premedicacoes().get(0).premedicacao());
     }
 
     @Test
@@ -134,7 +134,7 @@ class PremedicacaoControllerTest {
         assertNotNull(response);
         assertEquals(PremedicacaoDTO.class, response.getClass());
         assertEquals(premedicacao1DTO.id(), response.id());
-        assertEquals(premedicacao1DTO.analgesia(), response.analgesia());
+        assertEquals(premedicacao1DTO.premedicacao(), response.premedicacao());
     }
 
     @Test

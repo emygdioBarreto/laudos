@@ -6,6 +6,6 @@ import org.hibernate.validator.constraints.Length;
 
 public record ObservacaoClinicaDTO(
         Integer id,
-        @NotNull @NotBlank @Length(min = 5, max = 100) String descricao
+        @NotNull @NotBlank @Length(min = 5, max = 140) String descricao
 ) {
 }

@@ -55,9 +55,9 @@ public class ResumoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResumoDTO update(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<ResumoDTO> update(@PathVariable @NotNull @Positive Integer id,
                             @RequestBody @Valid @NotNull ResumoDTO resumoDTO) {
-        return service.update(id, resumoDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, resumoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +85,9 @@ public class ResumoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResumoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
+    public ResponseEntity<ResumoPageDTO> findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
                                  @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN' or hasRole('MEDICO'))")
@@ -100,7 +100,7 @@ public class ResumoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResumoDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<ResumoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
    }
 }

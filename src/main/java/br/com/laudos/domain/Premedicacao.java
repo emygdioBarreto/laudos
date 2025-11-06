@@ -24,5 +24,5 @@ public class Premedicacao {
     @NotBlank
     @Length(min = 5, max = 150)
     @Column(name = "premedicacao")
-    private String analgesia;
+    private String premedicacao;
 }

@@ -33,7 +33,7 @@ public class PremedicacaoService {
                                   @Valid @NotNull PremedicacaoDTO premedicacaoDTO) {
         return repository.findById(id)
                 .map(reg -> {
-                    reg.setAnalgesia(premedicacaoDTO.analgesia());
+                    reg.setPremedicacao(premedicacaoDTO.premedicacao());
                     return mapper.toDTO(repository.save(reg));
                 }).orElseThrow(()-> new RecordNotFoundException(id));
     }
