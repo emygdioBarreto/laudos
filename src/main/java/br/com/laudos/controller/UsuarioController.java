@@ -32,7 +32,7 @@ public class UsuarioController {
     @PostMapping
     @Operation(summary = "Salvar usuário", description = "Método para salvar um usuário na base de dados")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Usuário salvo com sucesso!"),
+            @ApiResponse(responseCode = "201", description = "Usuário salvo com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na gravação de um usuário"),
             @ApiResponse(responseCode = "401", description = "Login ou senha inválidos"),
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),

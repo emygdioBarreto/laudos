@@ -4,6 +4,7 @@ import br.com.laudos.dto.UsuarioDTO;
 import br.com.laudos.dto.mapper.UsuarioMapper;
 import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,11 @@ public class UsuarioService {
     private final UsuarioRepository repository;
     private final UsuarioMapper mapper;
 
-    public UsuarioDTO createUser(UsuarioDTO userDto) {
+    public UsuarioDTO createUser(@NotNull @Valid UsuarioDTO userDto) {
         return mapper.toDTO(repository.save(mapper.toEntity(userDto)));
     }
 
-    public UsuarioDTO update(Long id, UsuarioDTO dto) {
+    public UsuarioDTO update(@NotNull @Positive Long id, @NotNull @Valid UsuarioDTO dto) {
         return repository.findById(id)
                 .map(user -> {
                     user.setUsername(dto.username());
@@ -32,7 +33,7 @@ public class UsuarioService {
                 }).orElseThrow(()-> new RecordNotFoundException(id));
     }
 
-    public void delete(Long id) {
+    public void delete(@NotNull @Positive Long id) {
         repository.delete(repository.findById(id)
                 .orElseThrow(()-> new RecordNotFoundException(id)));
     }
