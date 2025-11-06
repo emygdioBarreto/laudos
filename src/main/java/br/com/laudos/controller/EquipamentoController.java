@@ -55,9 +55,9 @@ public class EquipamentoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EquipamentoDTO update(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<EquipamentoDTO> update(@PathVariable @NotNull @Positive Integer id,
                                  @RequestBody @Valid @NotNull EquipamentoDTO equipamentoDTO) {
-        return service.update(id, equipamentoDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, equipamentoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +85,9 @@ public class EquipamentoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EquipamentoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
+    public ResponseEntity<EquipamentoPageDTO> findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
                                       @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +100,7 @@ public class EquipamentoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EquipamentoDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<EquipamentoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }
