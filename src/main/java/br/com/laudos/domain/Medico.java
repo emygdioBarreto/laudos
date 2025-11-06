@@ -20,7 +20,7 @@ public class Medico {
 
     @NotNull
     @NotBlank
-    @Length(min = 5, max = 60)
-    @Column(name = "medico", length = 60)
+    @Length(min = 5, max = 140)
+    @Column(name = "medico", length = 140)
     private String medicoExecutor;
 }

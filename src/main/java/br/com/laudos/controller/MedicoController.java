@@ -55,9 +55,10 @@ public class MedicoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public MedicoDTO update(@PathVariable @NotNull @Positive String crm,
-                            @RequestBody @Valid @NotNull MedicoDTO medicoDTO) {
-        return service.update(crm, medicoDTO);
+    public ResponseEntity<MedicoDTO> update(
+            @PathVariable @NotNull @Positive String crm,
+            @RequestBody @Valid @NotNull MedicoDTO medicoDTO) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(crm, medicoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +86,9 @@ public class MedicoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public MedicoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
+    public ResponseEntity<MedicoPageDTO> findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
                                      @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +101,7 @@ public class MedicoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public MedicoDTO findById(@PathVariable @NotNull String crm) {
-        return service.findById(crm);
+    public ResponseEntity<MedicoDTO> findById(@PathVariable @NotNull String crm) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(crm));
     }
 }
