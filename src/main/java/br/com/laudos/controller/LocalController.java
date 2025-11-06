@@ -55,8 +55,9 @@ public class LocalController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<LocalDTO> update(@PathVariable @NotNull @Positive Integer id,
-                           @RequestBody @Valid @NotNull LocalDTO localDTO) {
+    public ResponseEntity<LocalDTO> update(
+            @PathVariable @NotNull @Positive Integer id,
+            @RequestBody @Valid @NotNull LocalDTO localDTO) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, localDTO));
     }
 
