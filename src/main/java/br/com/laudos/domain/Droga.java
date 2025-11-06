@@ -25,7 +25,7 @@ public class Droga {
 
     @NotNull
     @NotBlank
-    @Length(min = 5, max = 100)
+    @Length(min = 5, max = 200)
     @Column(name = "droga")
     private String nomedroga;
 }

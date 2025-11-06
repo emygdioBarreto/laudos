@@ -55,13 +55,14 @@ public class DrogaController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public DrogaDTO update(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<DrogaDTO> update(@PathVariable @NotNull @Positive Integer id,
                            @RequestBody @Valid @NotNull DrogaDTO drogaDTO) {
-        return service.update(id, drogaDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, drogaDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Remover nome da droga", description = "Método para remover nome de droga selecionada")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Nome da droga removida com sucesso!"),
@@ -71,7 +72,8 @@ public class DrogaController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
     public void delete(@PathVariable @NotNull @Positive Integer id) {
-        service.delete(id);    }
+        service.delete(id);
+    }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @GetMapping
@@ -83,11 +85,10 @@ public class DrogaController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public DrogaPageDTO list(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                             @RequestParam(defaultValue = "10") @Positive int pageSize)  {
-        DrogaPageDTO drogaPageDTO;
-        drogaPageDTO = service.findAll(page, pageSize);
-        return drogaPageDTO;
+    public ResponseEntity<DrogaPageDTO> findAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive int pageSize)  {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +101,7 @@ public class DrogaController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public DrogaDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<DrogaDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }
