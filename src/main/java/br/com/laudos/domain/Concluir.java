@@ -25,7 +25,7 @@ public class Concluir {
 
     @NotNull
     @NotBlank
-    @Length(min = 5, max = 100)
+    @Length(min = 5, max = 256)
     @Column(name = "conclusao")
     private String conclusao;
 }

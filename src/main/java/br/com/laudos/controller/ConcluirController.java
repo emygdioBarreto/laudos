@@ -41,8 +41,8 @@ public class ConcluirController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ConcluirDTO salvar(@RequestBody @Valid @NotNull ConcluirDTO concluirDTO) {
-        return service.salvar(concluirDTO);
+    public ResponseEntity<ConcluirDTO> salvar(@RequestBody @Valid @NotNull ConcluirDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -55,9 +55,9 @@ public class ConcluirController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ConcluirDTO update(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<ConcluirDTO> update(@PathVariable @NotNull @Positive Integer id,
                               @RequestBody @Valid @NotNull ConcluirDTO concluirDTO) {
-        return service.update(id, concluirDTO);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, concluirDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -88,7 +88,7 @@ public class ConcluirController {
     public ResponseEntity<ConcluirPageDTO> findAll(
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return ResponseEntity.ok(service.findAll(page, pageSize));
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -101,7 +101,7 @@ public class ConcluirController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ConcluirDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<ConcluirDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

@@ -5,11 +5,9 @@ import br.com.laudos.repository.ConcluirRepository;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.pt.Dado;
 import io.cucumber.java.pt.E;
-import io.cucumber.java.pt.Então;
+import io.cucumber.java.pt.Entao;
 import io.cucumber.java.pt.Quando;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.ResponseEntity;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -20,15 +18,18 @@ import static org.junit.Assert.assertTrue;
 
 public class ConcluirCucumber extends CucumberDefsDefault {
 
-    @Autowired
-    private TestRestTemplate testRestTemplate;
+    private static final int STATUS_CODE_EXPECT = 200;
 
-    @Autowired
-    private ConcluirRepository repository;
+    private final TestRestTemplate testRestTemplate;
 
-    private ResponseEntity<Concluir[]> response;
+    private final ConcluirRepository repository;
 
     private final List<Concluir> concluirCadastradas = new ArrayList<>();
+
+    public ConcluirCucumber(TestRestTemplate testRestTemplate, ConcluirRepository repository) {
+        this.testRestTemplate = testRestTemplate;
+        this.repository = repository;
+    }
 
     @Dado("que existam frases de concluir cadastradas no sistema:")
     public void queExistamFrasesDeConcluirCadastradasNoSistema(DataTable dataTable) {
@@ -42,20 +43,18 @@ public class ConcluirCucumber extends CucumberDefsDefault {
         }
     }
 
-    @Quando("eu faço uma requisição GET para obter as frases de concluir")
-    public void euFaçoUmaRequisiçãoGETParaObterAsFrasesDeConcluir() throws URISyntaxException {
-        response = testRestTemplate.getForEntity(new URI("/api/conclusoes"), Concluir[].class);
+    @Quando("eu faco uma requisicao GET para obter as frases de concluir")
+    public void euFacoUmaRequisicaoGETParaObterAsFrasesDeConcluir() throws URISyntaxException {
+        testRestTemplate.getForEntity(new URI("/api/conclusoes"), Concluir[].class);
     }
 
-    @Então("a resposta deve ter o status code {int}")
+    @Entao("a resposta deve ter o status code {int}")
     public void aRespostaDeveTerOStatusCode200(int statusCode) {
-        assertThat(200).isEqualTo(statusCode);
+        assertThat(statusCode).isEqualTo(STATUS_CODE_EXPECT);
     }
 
     @E("a resposta deve conter os dados que foram cadastrados previamente")
     public void aRespostaDeveConterOsDadosQueForamCadastradosPreviamente() {
-        concluirCadastradas.forEach(concluir -> {
-            assertTrue(concluirCadastradas.contains(concluir));
-        });
+        concluirCadastradas.forEach(concluir -> assertTrue(concluirCadastradas.contains(concluir)));
     }
 }
