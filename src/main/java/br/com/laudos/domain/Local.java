@@ -22,7 +22,7 @@ public class Local {
 
     @NotNull
     @NotBlank
-    @Length(min = 4, max = 60)
+    @Length(min = 4, max = 140)
     @Column(name = "descricao")
     private String descricao;
 }
