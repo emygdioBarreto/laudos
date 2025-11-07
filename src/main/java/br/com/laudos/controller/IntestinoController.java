@@ -55,9 +55,10 @@ public class IntestinoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public IntestinoDTO update(@PathVariable @NotNull @Positive Integer id,
-                               @RequestBody @Valid @NotNull IntestinoDTO intestinoDTO) {
-        return service.update(id, intestinoDTO);
+    public ResponseEntity<IntestinoDTO> update(
+            @PathVariable @NotNull @Positive Integer id,
+            @RequestBody @Valid @NotNull IntestinoDTO intestinoDTO) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, intestinoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +86,10 @@ public class IntestinoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public IntestinoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                                    @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+    public ResponseEntity<IntestinoPageDTO> findAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive int pageSize) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +102,7 @@ public class IntestinoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public IntestinoDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<IntestinoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

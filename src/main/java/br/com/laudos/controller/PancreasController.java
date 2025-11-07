@@ -55,9 +55,10 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public PancreasDTO update(@PathVariable @NotNull @Positive Integer id,
-                                         @RequestBody @Valid @NotNull PancreasDTO pancreasDTO) {
-        return service.update(id, pancreasDTO);
+    public ResponseEntity<PancreasDTO> update(
+            @PathVariable @NotNull @Positive Integer id,
+            @RequestBody @Valid @NotNull PancreasDTO pancreasDTO) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, pancreasDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +86,10 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public PancreasPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                                   @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+    public ResponseEntity<PancreasPageDTO> findAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive int pageSize) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +102,7 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public PancreasDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<PancreasDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

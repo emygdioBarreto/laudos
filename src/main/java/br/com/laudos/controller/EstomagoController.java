@@ -54,9 +54,10 @@ public class EstomagoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EstomagoDTO update(@PathVariable @NotNull @Positive Integer id,
-                              @RequestBody @Valid @NotNull EstomagoDTO estomagoDTO) {
-        return service.update(id, estomagoDTO);
+    public ResponseEntity<EstomagoDTO> update(
+            @PathVariable @NotNull @Positive Integer id,
+            @RequestBody @Valid @NotNull EstomagoDTO estomagoDTO) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, estomagoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -84,9 +85,10 @@ public class EstomagoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EstomagoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                                   @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+    public ResponseEntity<EstomagoPageDTO> findAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive int pageSize) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -99,7 +101,7 @@ public class EstomagoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EstomagoDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<EstomagoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

@@ -55,9 +55,10 @@ public class EsofagoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EsofagoDTO update(@PathVariable @NotNull @Positive Integer id,
-                             @RequestBody @Valid @NotNull EsofagoDTO esofagoDTO) {
-        return service.update(id, esofagoDTO);
+    public ResponseEntity<EsofagoDTO> update(
+            @PathVariable @NotNull @Positive Integer id,
+            @RequestBody @Valid @NotNull EsofagoDTO esofagoDTO) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, esofagoDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -85,9 +86,10 @@ public class EsofagoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EsofagoPageDTO findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
-                                  @RequestParam(defaultValue = "10") @Positive int pageSize) {
-        return service.findAll(page, pageSize);
+    public ResponseEntity<EsofagoPageDTO> findAll(
+            @RequestParam(defaultValue = "0") @PositiveOrZero int page,
+            @RequestParam(defaultValue = "10") @Positive int pageSize) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -100,7 +102,7 @@ public class EsofagoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public EsofagoDTO findById(@PathVariable @NotNull @Positive Integer id) {
-        return service.findById(id);
+    public ResponseEntity<EsofagoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }
