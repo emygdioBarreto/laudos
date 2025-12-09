@@ -1,11 +1,11 @@
 package br.com.laudos.controller;
 
-import br.com.laudos.domain.Pancreas;
-import br.com.laudos.dto.PancreasDTO;
-import br.com.laudos.dto.mapper.PancreasMapper;
-import br.com.laudos.dto.pages.PancreasPageDTO;
+import br.com.laudos.domain.Pancrea;
+import br.com.laudos.dto.PancreaDTO;
+import br.com.laudos.dto.mapper.PancreaMapper;
+import br.com.laudos.dto.pages.PancreaPageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;
-import br.com.laudos.service.PancreasService;
+import br.com.laudos.service.PancreaService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,58 +26,58 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PancreasControllerTest {
+class PancreaControllerTest {
 
     private static final String REGISTRO_NAO_ENCONTRADO = "Frase de pancreas não encontrada pelo ID informado.";
     private static final int PAGE = 0;
     private static final int SIZE = 10;
 
     @InjectMocks
-    private PancreasController controller;
+    private PancreaController controller;
 
     @Mock
-    private PancreasService service;
+    private PancreaService service;
 
     @Mock
-    private PancreasMapper mapper;
+    private PancreaMapper mapper;
 
-    private Pancreas pancreas;
-    private PancreasDTO pancreasDTO;
-    private Pancreas pancreas1;
-    private PancreasDTO pancreas1DTO;
+    private Pancrea pancrea;
+    private PancreaDTO pancreaDTO;
+    private Pancrea pancrea1;
+    private PancreaDTO pancreas1DTO;
 
-    private final List<PancreasDTO> pancreass = new ArrayList<>();
-    private PancreasPageDTO pancreasPageDTO;
+    private final List<PancreaDTO> pancreas = new ArrayList<>();
+    private PancreaPageDTO pancreasPageDTO;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        pancreas = new Pancreas(null, "Teste de gravação de frase de Pancreas");
-        pancreasDTO = new PancreasDTO(null, "Teste de gravação de frase de Pancreas");
-        pancreas1 = new Pancreas(5, "teste de frase de pancreas");
-        pancreas1DTO = new PancreasDTO(5, "teste de frase de pancreas Teste!");
+        pancrea = new Pancrea(null, "Teste de gravação de frase de Pancreas");
+        pancreaDTO = new PancreaDTO(null, "Teste de gravação de frase de Pancreas");
+        pancrea1 = new Pancrea(5, "teste de frase de pancreas");
+        pancreas1DTO = new PancreaDTO(5, "teste de frase de pancreas Teste!");
 
-        pancreass.add(pancreasDTO);
-        pancreasPageDTO = new PancreasPageDTO(pancreass, PAGE, SIZE);
+        pancreas.add(pancreaDTO);
+        pancreasPageDTO = new PancreaPageDTO(pancreas, PAGE, SIZE);
     }
 
     @Test
     @DisplayName(value = "Salvar frase de pancreas com sucesso")
     void salvarFraseDePancreasComSucesso() {
-        when(service.salvar(any())).thenReturn(pancreasDTO);
+        when(service.salvar(any())).thenReturn(pancreaDTO);
 
-        PancreasDTO response = service.salvar(mapper.toDTO(pancreas));
+        PancreaDTO response = service.salvar(mapper.toDTO(pancrea));
 
         assertNotNull(response);
-        assertEquals(PancreasDTO.class, response.getClass());
-        assertEquals(pancreas.getId(), response.id());
-        assertEquals(pancreas.getDescricao(), response.descricao());
+        assertEquals(PancreaDTO.class, response.getClass());
+        assertEquals(pancrea.getId(), response.id());
+        assertEquals(pancrea.getDescricao(), response.descricao());
 
-        verify(mapper, times(1)).toDTO(pancreas);
+        verify(mapper, times(1)).toDTO(pancrea);
 
-        assertThat(response).usingRecursiveComparison().isEqualTo(pancreasDTO);
-        assertThat(response.descricao()).isEqualTo(pancreasDTO.descricao());
+        assertThat(response).usingRecursiveComparison().isEqualTo(pancreaDTO);
+        assertThat(response.descricao()).isEqualTo(pancreaDTO.descricao());
     }
 
     @Test
@@ -85,10 +85,10 @@ class PancreasControllerTest {
     void atualizarFrasePancreasComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(pancreas1DTO);
 
-        PancreasDTO response = service.update(pancreas1DTO.id(), pancreas1DTO);
+        PancreaDTO response = service.update(pancreas1DTO.id(), pancreas1DTO);
 
         assertNotNull(response);
-        assertEquals(PancreasDTO.class, pancreas1DTO.getClass());
+        assertEquals(PancreaDTO.class, pancreas1DTO.getClass());
         assertEquals(pancreas1DTO.id(), response.id());
         assertEquals(pancreas1DTO.descricao(), response.descricao());
 
@@ -111,17 +111,17 @@ class PancreasControllerTest {
     void listarTodasFrasesPancreasComSucesso() {
         when(service.findAll(anyInt(),anyInt())).thenReturn(pancreasPageDTO);
 
-        pancreass.add(pancreasDTO);
-        PancreasPageDTO response = service.findAll(PAGE, SIZE);
+        pancreas.add(pancreaDTO);
+        PancreaPageDTO response = service.findAll(PAGE, SIZE);
 
         assertNotNull(response);
-        assertEquals(PancreasPageDTO.class, response.getClass());
-        assertEquals(PancreasDTO.class, response.pancreass().get(0).getClass());
+        assertEquals(PancreaPageDTO.class, response.getClass());
+        assertEquals(PancreaDTO.class, response.pancreas().get(0).getClass());
         assertEquals(PAGE, response.totalPages());
         assertEquals(SIZE, response.totalElements());
 
-        assertEquals(pancreasDTO.id(), response.pancreass().get(0).id());
-        assertEquals(pancreasDTO.descricao(), response.pancreass().get(0).descricao());
+        assertEquals(pancreaDTO.id(), response.pancreas().get(0).id());
+        assertEquals(pancreaDTO.descricao(), response.pancreas().get(0).descricao());
     }
 
     @Test
@@ -129,10 +129,10 @@ class PancreasControllerTest {
     void recuperarFrasePancreasPorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(pancreas1DTO);
 
-        PancreasDTO response = service.findById(pancreas1.getId());
+        PancreaDTO response = service.findById(pancrea1.getId());
 
         assertNotNull(response);
-        assertEquals(PancreasDTO.class, response.getClass());
+        assertEquals(PancreaDTO.class, response.getClass());
         assertEquals(pancreas1DTO.id(), response.id());
         assertEquals(pancreas1DTO.descricao(), response.descricao());
     }

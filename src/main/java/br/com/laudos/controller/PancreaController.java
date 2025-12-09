@@ -1,9 +1,9 @@
 package br.com.laudos.controller;
 
 import br.com.laudos.config.SecurityConfig;
-import br.com.laudos.dto.PancreasDTO;
-import br.com.laudos.dto.pages.PancreasPageDTO;
-import br.com.laudos.service.PancreasService;
+import br.com.laudos.dto.PancreaDTO;
+import br.com.laudos.dto.pages.PancreaPageDTO;
+import br.com.laudos.service.PancreaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @Tag(name = "Frases de Pancreas", description = "Método para salvar, editar, listar e remover dados de frases de Pancreas")
 @SecurityRequirement(name = SecurityConfig.SECURITY)
-public class PancreasController {
+public class PancreaController {
 
-    private final PancreasService service;
+    private final PancreaService service;
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")
@@ -41,7 +41,7 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<PancreasDTO> salvar(@RequestBody @Valid @NotNull PancreasDTO pancreasDTO) {
+    public ResponseEntity<PancreaDTO> salvar(@RequestBody @Valid @NotNull PancreaDTO pancreasDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(pancreasDTO));
     }
 
@@ -55,9 +55,9 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<PancreasDTO> update(
+    public ResponseEntity<PancreaDTO> update(
             @PathVariable @NotNull @Positive Integer id,
-            @RequestBody @Valid @NotNull PancreasDTO pancreasDTO) {
+            @RequestBody @Valid @NotNull PancreaDTO pancreasDTO) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, pancreasDTO));
     }
 
@@ -86,7 +86,7 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<PancreasPageDTO> findAll(
+    public ResponseEntity<PancreaPageDTO> findAll(
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
@@ -102,7 +102,7 @@ public class PancreasController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<PancreasDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+    public ResponseEntity<PancreaDTO> findById(@PathVariable @NotNull @Positive Integer id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

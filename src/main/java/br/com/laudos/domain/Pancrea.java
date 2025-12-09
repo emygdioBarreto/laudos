@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.Length;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Pancreas {
+public class Pancrea {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_pancreas_seq")

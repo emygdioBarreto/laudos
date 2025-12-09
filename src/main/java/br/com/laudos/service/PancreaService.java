@@ -1,11 +1,11 @@
 package br.com.laudos.service;
 
-import br.com.laudos.domain.Pancreas;
-import br.com.laudos.dto.PancreasDTO;
-import br.com.laudos.dto.mapper.PancreasMapper;
-import br.com.laudos.dto.pages.PancreasPageDTO;
+import br.com.laudos.domain.Pancrea;
+import br.com.laudos.dto.PancreaDTO;
+import br.com.laudos.dto.mapper.PancreaMapper;
+import br.com.laudos.dto.pages.PancreaPageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;
-import br.com.laudos.repository.PancreasRepository;
+import br.com.laudos.repository.PancreaRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -20,16 +20,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PancreasService {
+public class PancreaService {
 
-    private final PancreasRepository repository;
-    private final PancreasMapper mapper;
+    private final PancreaRepository repository;
+    private final PancreaMapper mapper;
 
-    public PancreasDTO salvar(@Valid @NotNull PancreasDTO pancreasDTO) {
+    public PancreaDTO salvar(@Valid @NotNull PancreaDTO pancreasDTO) {
         return mapper.toDTO(repository.save(mapper.toEntity(pancreasDTO)));
     }
 
-    public PancreasDTO update(@NotNull @Positive Integer id, @Valid @NotNull PancreasDTO pancreasDTO) {
+    public PancreaDTO update(@NotNull @Positive Integer id, @Valid @NotNull PancreaDTO pancreasDTO) {
         return repository.findById(id)
                 .map(reg -> {
                     reg.setDescricao(pancreasDTO.descricao());
@@ -42,13 +42,13 @@ public class PancreasService {
                 .orElseThrow(()-> new RecordNotFoundException(id)));
     }
 
-    public PancreasPageDTO findAll(@PositiveOrZero int page, @Positive int pageSize) {
-        Page<Pancreas> pagePancreas = repository.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
-        List<PancreasDTO> pandreass = pagePancreas.get().map(mapper::toDTO).toList();
-        return new PancreasPageDTO(pandreass, pagePancreas.getTotalPages(), pagePancreas.getTotalElements());
+    public PancreaPageDTO findAll(@PositiveOrZero int page, @Positive int pageSize) {
+        Page<Pancrea> pagePancreas = repository.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
+        List<PancreaDTO> pancreas = pagePancreas.get().map(mapper::toDTO).toList();
+        return new PancreaPageDTO(pancreas, pagePancreas.getTotalPages(), pagePancreas.getTotalElements());
     }
 
-    public PancreasDTO findById(@NotNull @Positive Integer id) {
+    public PancreaDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(()-> new RecordNotFoundException(id));
     }
