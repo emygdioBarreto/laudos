@@ -73,6 +73,6 @@ public class LaudoMapper {
         laudo.setConclusao(laudoDTO.conclusao());
         laudo.setObservacao(laudoDTO.observacao());
         laudo.setTipoExame(laudoDTO.tipoExame());
-        return laudo;
+         return laudo;
     }
 }

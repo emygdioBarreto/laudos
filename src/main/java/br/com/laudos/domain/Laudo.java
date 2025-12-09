@@ -22,8 +22,8 @@ public class Laudo {
     @Column(name = "data", nullable = false)
 	private Date data;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_equipamento", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_equipamento", columnDefinition = "id")
     private Equipamento equipamento;
 
     @Column(name = "paciente", length = 70, nullable = false)
