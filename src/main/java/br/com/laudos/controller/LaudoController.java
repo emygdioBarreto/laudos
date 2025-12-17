@@ -2,6 +2,7 @@ package br.com.laudos.controller;
 
 import br.com.laudos.config.SecurityConfig;
 import br.com.laudos.dto.LaudoDTO;
+import br.com.laudos.dto.LaudoUpdateDTO;
 import br.com.laudos.dto.pages.LaudoPageDTO;
 import br.com.laudos.service.LaudoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,8 +59,8 @@ public class LaudoController {
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
     public LaudoDTO update(@PathVariable @NotNull @Positive Long id,
-                           @RequestBody @Valid @NotNull LaudoDTO laudoDTO) {
-        return service.update(id, laudoDTO);
+                           @RequestBody @Valid @NotNull LaudoUpdateDTO laudoUpdateDTODTO) throws ParseException {
+        return service.update(id, laudoUpdateDTODTO);
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")

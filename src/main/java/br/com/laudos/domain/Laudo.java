@@ -23,7 +23,7 @@ public class Laudo {
 	private Date data;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_equipamento", columnDefinition = "id")
+    @JoinColumn(name = "id_equipamento")
     private Equipamento equipamento;
 
     @Column(name = "paciente", length = 70, nullable = false)
@@ -38,28 +38,32 @@ public class Laudo {
     @Column(name = "sexo", length = 1, nullable = false)
     private String sexo;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_solicitante", columnDefinition = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_solicitante")
     private Solicitante solicitante;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_procedencia", columnDefinition = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_procedencia")
     private Procedencia procedencia;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_premedicacao", columnDefinition = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_premedicacao")
     private Premedicacao premedicacao;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_local", columnDefinition = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "tipo_exame_id")
+    private TipoExame tipoExame;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_localexame")
     private Local localExame;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "crm", columnDefinition = "crm")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "crm")
     private Medico medicoExecutor;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_resumo_clinico", columnDefinition = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_resumo")
     private Resumo resumo;
 
     @Column(name = "observacao_clinica", length = 100)
@@ -88,8 +92,4 @@ public class Laudo {
 
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_tipo_exame", columnDefinition = "id")
-    private TipoExame tipoExame;
 }

@@ -2,10 +2,12 @@ package br.com.laudos.service;
 
 import br.com.laudos.domain.Laudo;
 import br.com.laudos.dto.LaudoDTO;
+import br.com.laudos.dto.LaudoUpdateDTO;
 import br.com.laudos.dto.mapper.LaudoMapper;
 import br.com.laudos.dto.pages.LaudoPageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;
-import br.com.laudos.repository.LaudoRepository;
+import br.com.laudos.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -24,45 +27,68 @@ import java.util.List;
 @RequiredArgsConstructor
 public class LaudoService {
 
+    private static final String LAUDO_NAO_ENCONTRADO = "Laudo não encontrado";
+
+    private final EquipamentoRepository equipamentoRepository;
     private final LaudoRepository repository;
+    private final LocalRepository localRepository;
+    private final MedicoRepository medicoRepository;
+    private final ProcedenciaRepository procedenciaRepository;
+    private final PremedicacaoRepository premedicacaoRepository;
+    private final SolicitanteRepository solicitanteRepository;
+    private final ResumoRepository resumoRepository;
+    private final TipoExameRepository tipoExameRepository;
     private final LaudoMapper mapper;
 
-    public LaudoDTO salvar(@Valid @NotNull LaudoDTO laudoDTO) throws ParseException {
-        return mapper.toDTO(repository.save(mapper.toEntity(laudoDTO)));
+    public LaudoDTO salvar(@Valid @NotNull LaudoDTO dto) {
+        Laudo laudo = repository.findById(dto.id())
+                .orElseThrow(() -> new RuntimeException(LAUDO_NAO_ENCONTRADO));
+        laudo.setEquipamento(equipamentoRepository.getReferenceById(dto.equipamento().getId()));
+        laudo.setLocalExame(localRepository.getReferenceById(dto.localExame().getId()));
+        laudo.setTipoExame(tipoExameRepository.getReferenceById(dto.tipoExame().getId()));
+        laudo.setProcedencia(procedenciaRepository.getReferenceById(dto.procedencia().getId()));
+        laudo.setResumo(resumoRepository.getReferenceById(dto.resumo().getId()));
+        laudo.setSolicitante(solicitanteRepository.getReferenceById(dto.solicitante().getId()));
+        laudo.setMedicoExecutor(medicoRepository.getReferenceById(dto.medicoExecutor().getCrm()));
+
+        // textos
+        laudo.setEsofago(dto.esofago());
+        laudo.setEstomago(dto.estomago());
+        laudo.setDuodeno(dto.duodeno());
+        laudo.setIntestino(dto.intestino());
+        laudo.setPancreas(dto.pancreas());
+        return mapper.toDTO(repository.save(laudo));
     }
 
-    public LaudoDTO update(@NotNull @Positive Long id, @Valid @NotNull LaudoDTO laudoDTO) {
-        SimpleDateFormat sdf = new SimpleDateFormat();
-        return repository.findById(id)
-                .map(laudo -> {
-                    try {
-                        laudo.setData(sdf.parse(laudoDTO.data()));
-                        laudo.setEquipamento(laudoDTO.equipamento());
-                        laudo.setPaciente(laudoDTO.paciente());
-                        laudo.setIdade(laudo.getIdade());
-                        laudo.setNascimento(sdf.parse(laudoDTO.nascimento()));
-                        laudo.setSexo(laudoDTO.sexo());
-                        laudo.setSolicitante(laudoDTO.solicitante());
-                        laudo.setProcedencia(laudoDTO.procedencia());
-                        laudo.setPremedicacao(laudoDTO.premedicacao());
-                        laudo.setLocalExame(laudoDTO.localExame());
-                        laudo.setMedicoExecutor(laudoDTO.medicoExecutor());
-                        laudo.setResumo(laudoDTO.resumo());
-                        laudo.setObservacaoClinica(laudoDTO.observacaoClinica());
-                        laudo.setEsofago(laudoDTO.esofago());
-                        laudo.setEstomago(laudoDTO.estomago());
-                        laudo.setDuodeno(laudoDTO.duodeno());
-                        laudo.setIntestino(laudoDTO.intestino());
-                        laudo.setPancreas(laudoDTO.pancreas());
-                        laudo.setSolucao(laudoDTO.solucao());
-                        laudo.setConclusao(laudoDTO.conclusao());
-                        laudo.setObservacao(laudoDTO.observacao());
-                        laudo.setTipoExame(laudoDTO.tipoExame());
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException("Falha na conversão de datas");
-                    }
-                    return mapper.toDTO(repository.save(laudo));
-                }).orElseThrow(() -> new RecordNotFoundException(id));
+    @Transactional
+    public LaudoDTO update(@NotNull @Positive Long id, @Valid @NotNull LaudoUpdateDTO dto) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        Laudo laudo = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(LAUDO_NAO_ENCONTRADO));
+
+        laudo.setData(sdf.parse(dto.data()));
+        laudo.setEquipamento(equipamentoRepository.getReferenceById(dto.equipamentoId()));
+        laudo.setSolicitante(solicitanteRepository.getReferenceById(dto.solicitanteId()));
+        laudo.setProcedencia(procedenciaRepository.getReferenceById(dto.procedenciaId()));
+        laudo.setPremedicacao(premedicacaoRepository.getReferenceById(dto.premedicacaoId()));
+        laudo.setLocalExame(localRepository.getReferenceById(dto.localExameId()));
+        laudo.setResumo(resumoRepository.getReferenceById(dto.resumoId()));
+        laudo.setTipoExame(tipoExameRepository.getReferenceById(dto.tipoExameId()));
+        laudo.setMedicoExecutor(medicoRepository.findByCrm(dto.medicoExecutorCrm()));
+        // campos simples
+        laudo.setPaciente(dto.paciente());
+        laudo.setIdade(dto.idade());
+        laudo.setNascimento(sdf.parse(dto.nascimento()));
+        laudo.setSexo(dto.sexo());
+        laudo.setObservacaoClinica(dto.observacaoClinica());
+        laudo.setEsofago(dto.esofago());
+        laudo.setEstomago(dto.estomago());
+        laudo.setDuodeno(dto.duodeno());
+        laudo.setIntestino(dto.intestino());
+        laudo.setPancreas(dto.pancreas());
+        laudo.setConclusao(dto.conclusao());
+        laudo.setObservacao(dto.observacao());
+        return mapper.toDTO(repository.save(laudo));
     }
 
     public void delete(@NotNull @Positive Long id) {
@@ -76,8 +102,9 @@ public class LaudoService {
         return new LaudoPageDTO(laudos, pageLaudo.getTotalPages(), pageLaudo.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
     public LaudoDTO findById(@NotNull @Positive Long id) {
-        return repository.findById(id).map(mapper::toDTO)
-                .orElseThrow(() -> new RecordNotFoundException(id));
+        return repository.buscarCompletoPorId(id).map(mapper::toDTO)
+                .orElseThrow(() -> new RecordNotFoundException(LAUDO_NAO_ENCONTRADO));
     }
 }
