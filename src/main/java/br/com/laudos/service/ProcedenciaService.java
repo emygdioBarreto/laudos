@@ -48,6 +48,14 @@ public class ProcedenciaService {
         return new ProcedenciaPageDTO(procedencias, pageProcedencia.getTotalPages(), pageProcedencia.getTotalElements());
     }
 
+    public List<ProcedenciaDTO> findAllProcedencias() throws RecordNotFoundException {
+        try {
+            return repository.findAllProcedencias().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
+    }
+
     public ProcedenciaDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(()-> new RecordNotFoundException(id));

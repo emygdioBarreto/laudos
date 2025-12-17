@@ -3,6 +3,7 @@ package br.com.laudos.controller;
 import br.com.laudos.config.SecurityConfig;
 import br.com.laudos.dto.ProcedenciaDTO;
 import br.com.laudos.dto.pages.ProcedenciaPageDTO;
+import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.service.ProcedenciaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -90,6 +93,18 @@ public class ProcedenciaController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @GetMapping("/lista")
+    @Operation(summary = "Lista de procedências", description = "Método para carregar uma lista de procedências")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de procedências carregadas com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga da lista de procedências"),
+            @ApiResponse(responseCode = "500", description = "Falha no servidor")
+    })
+    public ResponseEntity<List<ProcedenciaDTO>> findAll() throws RecordNotFoundException {
+        return ResponseEntity.ok(service.findAllProcedencias());
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
