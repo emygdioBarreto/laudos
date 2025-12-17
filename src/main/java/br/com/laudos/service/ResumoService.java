@@ -49,6 +49,14 @@ public class ResumoService {
         return new ResumoPageDTO(resumos, pageResumo.getTotalPages(), pageResumo.getTotalElements());
     }
 
+    public List<ResumoDTO> findAllResumos() throws RecordNotFoundException {
+        try {
+            return repository.findAllResumos().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
+    }
+
     public ResumoDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(()-> new RecordNotFoundException(id));

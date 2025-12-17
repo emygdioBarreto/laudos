@@ -1,11 +1,13 @@
 package br.com.laudos.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity
 @Table(name = "resumo_clinico")
 @Getter
@@ -17,7 +19,7 @@ public class Resumo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_resumo_clinico_seq")
     @SequenceGenerator(name = "id_resumo_clinico_seq", allocationSize = 1)
-    @Column(name = "id_resumo_clinico")
+    @Column(name = "id_resumo")
     private Integer id;
 
     @NotNull
