@@ -47,6 +47,14 @@ public class MedicoService {
         return new MedicoPageDTO(medicos, pageMedico.getTotalPages(), pageMedico.getTotalElements());
     }
 
+    public List<MedicoDTO> findAllMedicos() throws RecordNotFoundException {
+        try {
+            return repository.findAllMedicos().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
+    }
+
     public MedicoDTO findById(@NotNull String crm) {
         return repository.findById(crm).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(crm));
