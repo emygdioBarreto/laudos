@@ -2,7 +2,9 @@ package br.com.laudos.controller;
 
 import br.com.laudos.config.SecurityConfig;
 import br.com.laudos.dto.PremedicacaoDTO;
+import br.com.laudos.dto.ProcedenciaDTO;
 import br.com.laudos.dto.pages.PremedicacaoPageDTO;
+import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.service.PremedicacaoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -90,6 +94,18 @@ public class PremedicacaoController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page,pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @GetMapping("/lista")
+    @Operation(summary = "Lista de premedicações", description = "Método para carregar uma lista de premedicações")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de premedicações carregadas com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga da lista de premedicações"),
+            @ApiResponse(responseCode = "500", description = "Falha no servidor")
+    })
+    public ResponseEntity<List<PremedicacaoDTO>> findAll() throws RecordNotFoundException {
+        return ResponseEntity.ok(service.findAllPremedicacoes());
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")

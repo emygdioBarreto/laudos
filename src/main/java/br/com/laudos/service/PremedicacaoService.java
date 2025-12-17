@@ -2,6 +2,7 @@ package br.com.laudos.service;
 
 import br.com.laudos.domain.Premedicacao;
 import br.com.laudos.dto.PremedicacaoDTO;
+import br.com.laudos.dto.ProcedenciaDTO;
 import br.com.laudos.dto.mapper.PremedicacaoMapper;
 import br.com.laudos.dto.pages.PremedicacaoPageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;
@@ -47,6 +48,14 @@ public class PremedicacaoService {
         Page<Premedicacao> pagePremedicacao = repository.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
         List<PremedicacaoDTO> premedicacoes = pagePremedicacao.get().map(mapper::toDTO).toList();
         return new PremedicacaoPageDTO(premedicacoes, pagePremedicacao.getTotalPages(), pagePremedicacao.getTotalElements());
+    }
+
+    public List<PremedicacaoDTO> findAllPremedicacoes() throws RecordNotFoundException {
+        try {
+            return repository.findAllPremedicacoes().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
     }
 
     public PremedicacaoDTO findById(@NotNull @Positive Integer id) {
