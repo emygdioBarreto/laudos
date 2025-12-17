@@ -3,6 +3,7 @@ package br.com.laudos.controller;
 import br.com.laudos.config.SecurityConfig;
 import br.com.laudos.dto.EquipamentoDTO;
 import br.com.laudos.dto.pages.EquipamentoPageDTO;
+import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.service.EquipamentoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -88,6 +91,18 @@ public class EquipamentoController {
     public ResponseEntity<EquipamentoPageDTO> findAll(@RequestParam(defaultValue = "0") @PositiveOrZero int page,
                                       @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @GetMapping("/lista")
+    @Operation(summary = "Lista de produtos", description = "Método para carregar uma lista de produtos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de produtos carregados com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga da lista de produtos"),
+            @ApiResponse(responseCode = "500", description = "Falha no servidor")
+    })
+    public ResponseEntity<List<EquipamentoDTO>> findAll() throws RecordNotFoundException {
+        return ResponseEntity.ok(service.findAllEquipamentos());
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")

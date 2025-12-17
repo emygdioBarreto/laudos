@@ -55,6 +55,14 @@ public class EquipamentoService {
         return new EquipamentoPageDTO(equipamentos, pageEquipamento.getTotalPages(), pageEquipamento.getTotalElements());
     }
 
+    public List<EquipamentoDTO> findAllEquipamentos() throws RecordNotFoundException {
+        try {
+            return repository.findAllEquipamentos().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
+    }
+
     public EquipamentoDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(id));
