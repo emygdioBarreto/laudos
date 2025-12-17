@@ -3,6 +3,7 @@ package br.com.laudos.controller;
 import br.com.laudos.config.SecurityConfig;
 import br.com.laudos.dto.TipoExameDTO;
 import br.com.laudos.dto.pages.TipoExamePageDTO;
+import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.service.TipoExameService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
@@ -90,6 +93,18 @@ public class TipoExameController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    @GetMapping("/lista")
+    @Operation(summary = "Lista de Tipos de Exames", description = "Método para carregar uma lista de Tipos de Exames")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de Tipos de Exames carregados com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga da lista de Tipos de Exames"),
+            @ApiResponse(responseCode = "500", description = "Falha no servidor")
+    })
+    public ResponseEntity<List<TipoExameDTO>> findAll() throws RecordNotFoundException {
+        return ResponseEntity.ok(service.findAllTipoExames());
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")

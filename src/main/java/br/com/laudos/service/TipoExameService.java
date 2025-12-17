@@ -1,7 +1,6 @@
 package br.com.laudos.service;
 
-import br.com.laudos.domain.TipoExame;
-import br.com.laudos.dto.TipoExameDTO;
+import br.com.laudos.domain.TipoExame;import br.com.laudos.dto.TipoExameDTO;
 import br.com.laudos.dto.mapper.TipoExameMapper;
 import br.com.laudos.dto.pages.TipoExamePageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;
@@ -52,6 +51,14 @@ public class TipoExameService {
         Page<TipoExame> pageTipoExame = repository.findAll(PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "id")));
         List<TipoExameDTO> tiposExames = pageTipoExame.get().map(mapper::toDTO).toList();
         return new TipoExamePageDTO(tiposExames, pageTipoExame.getTotalPages(), pageTipoExame.getTotalElements());
+    }
+
+    public List<TipoExameDTO> findAllTipoExames() throws RecordNotFoundException {
+        try {
+            return repository.findAllTipoExames().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
     }
 
     public TipoExameDTO findById(@NotNull @Positive Integer id) {
