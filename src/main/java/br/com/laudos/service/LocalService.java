@@ -48,6 +48,14 @@ public class LocalService {
         return new LocalPageDTO(locais, pageLocal.getTotalPages(), pageLocal.getTotalElements());
     }
 
+    public List<LocalDTO> findAllLocais() throws RecordNotFoundException {
+        try {
+            return repository.findAllLocais().stream().map(mapper::toDTO).toList();
+        } catch (java.lang.RuntimeException e) {
+            throw new RecordNotFoundException("Registros não encontrados. Verifique conexão com banco de dados!");
+        }
+    }
+
     public LocalDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(id));
