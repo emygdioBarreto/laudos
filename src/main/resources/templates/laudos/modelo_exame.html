@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        @page { size: A4; margin: 1.2cm 1.5cm; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.3; font-size: 10.5pt; }
+        .header { border-bottom: 2px solid #6f7895; margin-bottom: 15px; padding-bottom: 5px; }
+        .titulo-exame { text-align: center; color: #6f7895; font-size: 14pt; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+
+        .dados-paciente { display: table; width: 100%; margin-bottom: 15px; font-size: 9.5pt; border: 1px solid #eee; padding: 8px; background-color: #fafafa; }
+        .linha { display: table-row; }
+        .coluna { display: table-cell; padding: 1px 5px; }
+
+        .secao { margin-top: 10px; }
+        .titulo-secao { color: #6f7895; font-weight: bold; border-left: 3px solid #6f7895; padding-left: 6px; margin-bottom: 3px; text-transform: uppercase; font-size: 10pt; }
+        .texto-conteudo { text-align: justify; margin-bottom: 8px; white-space: pre-wrap; }
+
+        .rodape { position: running(footer); text-align: center; font-size: 8.5pt; color: #777; border-top: 1px solid #eee; margin-top: 20px; padding-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <div class="titulo-exame" th:text="${laudo.equipamento}">EXAME</div>
+</div>
+
+<div class="dados-paciente">
+    <div class="linha">
+        <div class="coluna"><strong>Paciente:</strong> <span th:text="${laudo.paciente}"></span></div>
+        <div class="coluna"><strong>Idade:</strong> <span th:text="${laudo.idade}"></span></div>
+        <div class="coluna"><strong>Sexo:</strong> <span th:text="${laudo.sexo}"></span></div>
+    </div>
+    <div class="linha">
+        <div class="coluna"><strong>Data:</strong> <span th:text="${#temporals.format(laudo.data, 'dd/MM/yyyy')}"></span></div>
+        <div class="coluna"><strong>Médico:</strong> <span th:text="${laudo.medicoExecutor}"></span></div>
+        <div class="coluna"><strong>Procedência:</strong> <span th:text="${laudo.procedenciaDescricao}"></span></div>
+    </div>
+</div>
+
+<div class="corpo-laudo">
+    <div class="secao" th:if="${laudo.resumo != null && !laudo.resumo.isEmpty()}">
+        <div class="titulo-secao">Resumo Clínico</div>
+        <div class="texto-conteudo" th:text="${laudo.resumo}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.esofago != null && !laudo.esofago.isEmpty()}">
+        <div class="titulo-secao">Esôfago</div>
+        <div class="texto-conteudo" th:text="${laudo.esofago}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.estomago != null && !laudo.estomago.isEmpty()}">
+        <div class="titulo-secao">Estômago</div>
+        <div class="texto-conteudo" th:text="${laudo.estomago}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.duodeno != null && !laudo.duodeno.isEmpty()}">
+        <div class="titulo-secao">Duodeno</div>
+        <div class="texto-conteudo" th:text="${laudo.duodeno}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.intestinogrosso != null && !laudo.intestinogrosso.isEmpty()}">
+        <div class="titulo-secao">Intestino Grosso</div>
+        <div class="texto-conteudo" th:text="${laudo.intestinogrosso}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.pancreas != null && !laudo.pancreas.isEmpty()}">
+        <div class="titulo-secao">Pâncreas</div>
+        <div class="texto-conteudo" th:text="${laudo.pancreas}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.conclusao != null && !laudo.conclusao.isEmpty()}">
+        <div class="titulo-secao">Conclusão</div>
+        <div class="texto-conteudo" style="font-weight: bold;" th:text="${laudo.conclusao}"></div>
+    </div>
+
+    <div class="secao" th:if="${laudo.obs != null && !laudo.obs.isEmpty()}">
+        <div class="titulo-secao">Observações</div>
+        <div class="texto-conteudo" th:text="${laudo.obs}"></div>
+    </div>
+</div>
+
+<div class="rodape">
+    Laudo gerado eletronicamente por <span th:text="${laudo.medicoExecutor}"></span> - CRM: <span th:text="${laudo.crm}"></span>
+</div>
+
+</body>
+</html>

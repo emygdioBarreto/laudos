@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        @page { size: A4; margin: 2cm; }
+        body { font-family: sans-serif; color: #333; line-height: 1.6; }
+        .header { border-bottom: 2px solid #6f7895; padding-bottom: 10px; margin-bottom: 20px; }
+        .titulo-orgao { color: #6f7895; font-weight: bold; text-transform: uppercase; margin-top: 15px; border-left: 4px solid #6f7895; padding-left: 8px; }
+        .texto-laudo { margin-bottom: 10px; text-align: justify; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h2>LAUDO DE EXAME ENDOSCÓPICO</h2>
+    <p><strong>Paciente:</strong> <span th:text="${pacienteNome}">NOME DO PACIENTE</span></p>
+</div>
+
+<div th:if="${esofago != null}">
+    <div class="titulo-orgao">Esôfago</div>
+    <div class="texto-laudo" th:text="${esofago}"></div>
+</div>
+
+<div th:if="${estomago != null}">
+    <div class="titulo-orgao">Estômago</div>
+    <div class="texto-laudo" th:text="${estomago}"></div>
+</div>
+</body>
+</html>
