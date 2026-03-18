@@ -60,8 +60,8 @@ class TipoExameServiceTest {
 
         tipoExame = new TipoExame(null, "Teste de gravação de Tipos de Exames", "C", false, false, false, false, false);
         tipoExameDTO = new TipoExameDTO(null, "Teste de gravação de Tipos de Exames", "C", false, false, false, false, false);
-        tipoExame1 = new TipoExame(1, "Endoscopia Digestiva Alta", "C", true, true, true, false, false);
-        tipoExame1DTO = new TipoExameDTO(1, "Endoscopia Digestiva Alta Teste!", "C", true, true, true, false, false);
+        tipoExame1 = new TipoExame(1L, "Endoscopia Digestiva Alta", "C", true, true, true, false, false);
+        tipoExame1DTO = new TipoExameDTO(1L, "Endoscopia Digestiva Alta Teste!", "C", true, true, true, false, false);
     }
 
     @Test
@@ -96,11 +96,11 @@ class TipoExameServiceTest {
     @Test
     @DisplayName(value = "Atualizar tipo de exame com sucesso")
     void atualizarFraseTipoExameComSucesso() {
-        when(repository.findById(tipoExame1.getId())).thenReturn(Optional.ofNullable(tipoExame1));
+        when(repository.findById(tipoExame1.getId().intValue())).thenReturn(Optional.ofNullable(tipoExame1));
         when(repository.save(tipoExame1)).thenReturn(tipoExame1);
         when(mapper.toDTO(tipoExame1)).thenReturn(tipoExame1DTO);
 
-        var varTipoExame = repository.findById(tipoExame1.getId());
+        var varTipoExame = repository.findById(tipoExame1.getId().intValue());
         if (varTipoExame.isPresent()) {
             varTipoExame.map(tpe -> {
                 tpe.setDescricao(tipoExame1DTO.descricao());
@@ -134,7 +134,7 @@ class TipoExameServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(tipoExame1));
         doNothing().when(repository).delete(any());
 
-        var varTipoExame = repository.findById(tipoExame1.getId());
+        var varTipoExame = repository.findById(tipoExame1.getId().intValue());
         if (varTipoExame.isPresent()) {
             repository.delete(varTipoExame.get());
 
@@ -182,7 +182,7 @@ class TipoExameServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(tipoExame1));
         when(mapper.toDTO(tipoExame1)).thenReturn(tipoExame1DTO);
 
-        Optional<TipoExameDTO> response = repository.findById(tipoExame1.getId()).map(mapper::toDTO);
+        Optional<TipoExameDTO> response = repository.findById(tipoExame1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 

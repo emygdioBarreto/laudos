@@ -60,8 +60,8 @@ class ResumoServiceTest {
 
         resumo = new Resumo(null, "Teste de gravação de frase de Resumo");
         resumoDTO = new ResumoDTO(null, "Teste de gravação de frase de Resumo");
-        resumo1 = new Resumo(2, "resumo clinico Inexistente 39");
-        resumo1DTO = new ResumoDTO(2, "resumo clinico Inexistente 39 Teste!");
+        resumo1 = new Resumo(2L, "resumo clinico Inexistente 39");
+        resumo1DTO = new ResumoDTO(2L, "resumo clinico Inexistente 39 Teste!");
     }
 
     @Test
@@ -90,11 +90,11 @@ class ResumoServiceTest {
     @Test
     @DisplayName(value = "Atualizar a frase de resumo clínico com sucesso")
     void atualizarFraseResumoComSucesso() {
-        when(repository.findById(resumo1.getId())).thenReturn(Optional.ofNullable(resumo1));
+        when(repository.findById(resumo1.getId().intValue())).thenReturn(Optional.ofNullable(resumo1));
         when(repository.save(resumo1)).thenReturn(resumo1);
         when(mapper.toDTO(resumo1)).thenReturn(resumo1DTO);
 
-        var varResumo = repository.findById(resumo1.getId());
+        var varResumo = repository.findById(resumo1.getId().intValue());
         if (varResumo.isPresent()) {
             varResumo.map(duo -> {
                 duo.setDescricao(resumo1DTO.descricao());
@@ -116,7 +116,7 @@ class ResumoServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(resumo1));
         doNothing().when(repository).delete(any());
 
-        var varResumo = repository.findById(resumo1.getId());
+        var varResumo = repository.findById(resumo1.getId().intValue());
         if (varResumo.isPresent()) {
             repository.delete(varResumo.get());
 
@@ -158,7 +158,7 @@ class ResumoServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(resumo1));
         when(mapper.toDTO(resumo1)).thenReturn(resumo1DTO);
 
-        Optional<ResumoDTO> response = repository.findById(resumo1.getId()).map(mapper::toDTO);
+        Optional<ResumoDTO> response = repository.findById(resumo1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 

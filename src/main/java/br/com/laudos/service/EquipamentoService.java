@@ -29,8 +29,8 @@ public class EquipamentoService {
         return mapper.toDTO(repository.save(mapper.toEntity(equipamentoDTO)));
     }
 
-    public EquipamentoDTO update(@NotNull @Positive Integer id, @Valid @NotNull EquipamentoDTO equipamentoDTO) {
-        return repository.findById(id)
+    public EquipamentoDTO update(@NotNull @Positive Long id, @Valid @NotNull EquipamentoDTO equipamentoDTO) {
+        return repository.findById(id.intValue())
                 .map(recordFound -> {
                     recordFound.setDescricao(equipamentoDTO.descricao());
                     recordFound.setSuperior(equipamentoDTO.superior());
@@ -44,8 +44,8 @@ public class EquipamentoService {
                 }).orElseThrow(() -> new RecordNotFoundException(id));
     }
 
-    public void delete(@NotNull @Positive Integer id) {
-        repository.delete(repository.findById(id)
+    public void delete(@NotNull @Positive Long id) {
+        repository.delete(repository.findById(id.intValue())
                 .orElseThrow(() -> new RecordNotFoundException(id)));
     }
 
@@ -63,8 +63,8 @@ public class EquipamentoService {
         }
     }
 
-    public EquipamentoDTO findById(@NotNull @Positive Integer id) {
-        return repository.findById(id).map(mapper::toDTO)
+    public EquipamentoDTO findById(@NotNull @Positive Long id) {
+        return repository.findById(id.intValue()).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(id));
     }
 }

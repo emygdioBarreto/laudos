@@ -60,8 +60,8 @@ class PremedicacaoServiceTest {
 
         premedicacao = new Premedicacao(null, "Teste de gravação de frase de Premedicacao");
         premedicacaoDTO = new PremedicacaoDTO(null, "Teste de gravação de frase de Premedicacao");
-        premedicacao1 = new Premedicacao(1, "Xylocaína tópica à 10%.");
-        premedicacao1DTO = new PremedicacaoDTO(1, "Xylocaína tópica à 10%. Teste!");
+        premedicacao1 = new Premedicacao(1L, "Xylocaína tópica à 10%.");
+        premedicacao1DTO = new PremedicacaoDTO(1L, "Xylocaína tópica à 10%. Teste!");
     }
 
     @Test
@@ -77,34 +77,34 @@ class PremedicacaoServiceTest {
 
         assertNotNull(varPremedicacao);
         assertEquals(PremedicacaoDTO.class, dtoConverter.getClass());
-        assertEquals(premedicacaoDTO.analgesia(), dtoConverter.analgesia());
+        assertEquals(premedicacaoDTO.descricao(), dtoConverter.descricao());
 
         verify(mapper, times(1)).toEntity(premedicacaoDTO);
         verify(repository, times(1)).save(premedicacao);
         verify(mapper, times(1)).toDTO(premedicacao);
 
         assertThat(dtoConverter).usingRecursiveComparison().isEqualTo(premedicacaoDTO);
-        assertThat(dtoConverter.analgesia()).isEqualTo(premedicacaoDTO.analgesia());
+        assertThat(dtoConverter.descricao()).isEqualTo(premedicacaoDTO.descricao());
     }
 
     @Test
     @DisplayName(value = "Atualizar a frase de premedicação com sucesso")
     void atualizarFrasePremedicacaoComSucesso() {
-        when(repository.findById(premedicacao1.getId())).thenReturn(Optional.ofNullable(premedicacao1));
+        when(repository.findById(premedicacao1.getId().intValue())).thenReturn(Optional.ofNullable(premedicacao1));
         when(repository.save(premedicacao1)).thenReturn(premedicacao1);
         when(mapper.toDTO(premedicacao1)).thenReturn(premedicacao1DTO);
 
-        var varPremedicacao = repository.findById(premedicacao1.getId());
+        var varPremedicacao = repository.findById(premedicacao1.getId().intValue());
         if (varPremedicacao.isPresent()) {
             varPremedicacao.map(duo -> {
-                duo.setAnalgesia(premedicacao1DTO.analgesia());
+                duo.setDescricao(premedicacao1DTO.descricao());
                 return mapper.toDTO(repository.save(duo));
             });
 
             assertNotNull(varPremedicacao);
             assertEquals(PremedicacaoDTO.class, premedicacao1DTO.getClass());
             assertEquals(premedicacao1DTO.id(), varPremedicacao.get().getId());
-            assertEquals(premedicacao1DTO.analgesia(), varPremedicacao.get().getAnalgesia());
+            assertEquals(premedicacao1DTO.descricao(), varPremedicacao.get().getDescricao());
         } else {
             throw new RecordNotFoundException(REGISTRO_NAO_ENCONTRADO);
         }
@@ -116,7 +116,7 @@ class PremedicacaoServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(premedicacao1));
         doNothing().when(repository).delete(any());
 
-        var varPremedicacao = repository.findById(premedicacao1.getId());
+        var varPremedicacao = repository.findById(premedicacao1.getId().intValue());
         if (varPremedicacao.isPresent()) {
             repository.delete(varPremedicacao.get());
 
@@ -149,7 +149,7 @@ class PremedicacaoServiceTest {
         assertEquals(SIZE, pageDTO.totalElements());
 
         assertEquals(premedicacao1DTO.id(), pageDTO.premedicacoes().get(0).id());
-        assertEquals(premedicacao1DTO.analgesia(), pageDTO.premedicacoes().get(0).analgesia());
+        assertEquals(premedicacao1DTO.descricao(), pageDTO.premedicacoes().get(0).descricao());
     }
 
     @Test
@@ -158,12 +158,12 @@ class PremedicacaoServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(premedicacao1));
         when(mapper.toDTO(premedicacao1)).thenReturn(premedicacao1DTO);
 
-        Optional<PremedicacaoDTO> response = repository.findById(premedicacao1.getId()).map(mapper::toDTO);
+        Optional<PremedicacaoDTO> response = repository.findById(premedicacao1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 
             assertEquals(premedicacao1DTO.id(), response.get().id());
-            assertEquals(premedicacao1DTO.analgesia(), response.get().analgesia());
+            assertEquals(premedicacao1DTO.descricao(), response.get().descricao());
         } else {
             throw new RecordNotFoundException(premedicacao1.getId());
         }

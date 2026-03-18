@@ -48,6 +48,10 @@ public class IntestinoService {
         return new IntestinoPageDTO(intestinos, pageIntestino.getTotalPages(), pageIntestino.getTotalElements());
     }
 
+    public List<IntestinoDTO> findAll() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
+
     public IntestinoDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(id));

@@ -58,8 +58,8 @@ class EquipamentoServiceTest {
 
         equipamento = new Equipamento(null, "Teste de Gravação de equipamento", "30", "10", "10", "10", "1", "Recife", "C");
         equipamentoDTO = new EquipamentoDTO(null, "Teste de Gravação de equipamento", "30", "10", "10", "10", "1", "Recife", "C");
-        equipamento1 = new Equipamento(1, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
-        equipamento1DTO = new EquipamentoDTO(1, "Pentax EG290I Teste", "30", "10", "10", "10", "1", "Recife", "C");
+        equipamento1 = new Equipamento(1L, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
+        equipamento1DTO = new EquipamentoDTO(1L, "Pentax EG290I Teste", "30", "10", "10", "10", "1", "Recife", "C");
     }
 
     @Test
@@ -170,7 +170,7 @@ class EquipamentoServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(equipamento1));
         when(mapper.toDTO(equipamento1)).thenReturn(equipamento1DTO);
 
-        Optional<EquipamentoDTO> response = repository.findById(equipamento1.getId()).map(mapper::toDTO);
+        Optional<EquipamentoDTO> response = repository.findById(equipamento1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 

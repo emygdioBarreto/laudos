@@ -48,6 +48,10 @@ public class PancreaService {
         return new PancreaPageDTO(pancreas, pagePancreas.getTotalPages(), pagePancreas.getTotalElements());
     }
 
+    public List<PancreaDTO> findAll() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
+
     public PancreaDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(()-> new RecordNotFoundException(id));

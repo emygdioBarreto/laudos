@@ -60,8 +60,8 @@ class LocalServiceTest {
 
         local = new Local(null, "Teste de gravação de frase de Local");
         localDTO = new LocalDTO(null, "Teste de gravação de frase de Local");
-        local1 = new Local(2, "Papila anatômica");
-        local1DTO = new LocalDTO(2, "Papila anatômica teste!");
+        local1 = new Local(2L, "Papila anatômica");
+        local1DTO = new LocalDTO(2L, "Papila anatômica teste!");
     }
 
     @Test
@@ -158,7 +158,7 @@ class LocalServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(local1));
         when(mapper.toDTO(local1)).thenReturn(local1DTO);
 
-        Optional<LocalDTO> response = repository.findById(local1.getId()).map(mapper::toDTO);
+        Optional<LocalDTO> response = repository.findById(local1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 

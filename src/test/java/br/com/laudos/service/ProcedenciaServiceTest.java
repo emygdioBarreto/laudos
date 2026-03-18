@@ -60,8 +60,8 @@ class ProcedenciaServiceTest {
 
         procedencia = new Procedencia(null, "Teste de gravação de frase de Procedencia");
         procedenciaDTO = new ProcedenciaDTO(null, "Teste de gravação de frase de Procedencia");
-        procedencia1 = new Procedencia(3, "Sul América");
-        procedencia1DTO = new ProcedenciaDTO(3, "Sul América Teste!");
+        procedencia1 = new Procedencia(3L, "Sul América");
+        procedencia1DTO = new ProcedenciaDTO(3L, "Sul América Teste!");
     }
 
     @Test
@@ -90,11 +90,11 @@ class ProcedenciaServiceTest {
     @Test
     @DisplayName(value = "Atualizar a frase de procedência com sucesso")
     void atualizarFraseProcedenciaComSucesso() {
-        when(repository.findById(procedencia1.getId())).thenReturn(Optional.ofNullable(procedencia1));
+        when(repository.findById(procedencia1.getId().intValue())).thenReturn(Optional.ofNullable(procedencia1));
         when(repository.save(procedencia1)).thenReturn(procedencia1);
         when(mapper.toDTO(procedencia1)).thenReturn(procedencia1DTO);
 
-        var varProcedencia = repository.findById(procedencia1.getId());
+        var varProcedencia = repository.findById(procedencia1.getId().intValue());
         if (varProcedencia.isPresent()) {
             varProcedencia.map(duo -> {
                 duo.setDescricao(procedencia1DTO.descricao());
@@ -116,7 +116,7 @@ class ProcedenciaServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(procedencia1));
         doNothing().when(repository).delete(any());
 
-        var varProcedencia = repository.findById(procedencia1.getId());
+        var varProcedencia = repository.findById(procedencia1.getId().intValue());
         if (varProcedencia.isPresent()) {
             repository.delete(varProcedencia.get());
 
@@ -158,7 +158,7 @@ class ProcedenciaServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(procedencia1));
         when(mapper.toDTO(procedencia1)).thenReturn(procedencia1DTO);
 
-        Optional<ProcedenciaDTO> response = repository.findById(procedencia1.getId()).map(mapper::toDTO);
+        Optional<ProcedenciaDTO> response = repository.findById(procedencia1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 

@@ -48,6 +48,10 @@ public class EstomagoService {
         return new EstomagoPageDTO(estomagos, pageEstomago.getTotalPages(), pageEstomago.getTotalElements());
     }
 
+    public List<EstomagoDTO> findAll() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
+
     public EstomagoDTO findById(@NotNull @Positive Integer id) {
         return repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(id));

@@ -60,8 +60,8 @@ class SolicitanteServiceTest {
 
         solicitante = new Solicitante(null, "Teste de gravação de frase de Solicitante");
         solicitanteDTO = new SolicitanteDTO(null, "Teste de gravação de frase de Solicitante");
-        solicitante1 = new Solicitante(3, "Dr. Moacyr Novaes");
-        solicitante1DTO = new SolicitanteDTO(3, "Dr. Moacyr Novaes Teste!");
+        solicitante1 = new Solicitante(3L, "Dr. Moacyr Novaes");
+        solicitante1DTO = new SolicitanteDTO(3L, "Dr. Moacyr Novaes Teste!");
     }
 
     @Test
@@ -90,11 +90,11 @@ class SolicitanteServiceTest {
     @Test
     @DisplayName(value = "Atualizar a frase de solicitante com sucesso")
     void atualizarFraseSolicitanteComSucesso() {
-        when(repository.findById(solicitante1.getId())).thenReturn(Optional.ofNullable(solicitante1));
+        when(repository.findById(solicitante1.getId().intValue())).thenReturn(Optional.ofNullable(solicitante1));
         when(repository.save(solicitante1)).thenReturn(solicitante1);
         when(mapper.toDTO(solicitante1)).thenReturn(solicitante1DTO);
 
-        var varSolicitante = repository.findById(solicitante1.getId());
+        var varSolicitante = repository.findById(solicitante1.getId().intValue());
         if (varSolicitante.isPresent()) {
             varSolicitante.map(duo -> {
                 duo.setMedicoSolicitante(solicitante1DTO.medicoSolicitante());
@@ -116,7 +116,7 @@ class SolicitanteServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(solicitante1));
         doNothing().when(repository).delete(any());
 
-        var varSolicitante = repository.findById(solicitante1.getId());
+        var varSolicitante = repository.findById(solicitante1.getId().intValue());
         if (varSolicitante.isPresent()) {
             repository.delete(varSolicitante.get());
 
@@ -158,7 +158,7 @@ class SolicitanteServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(solicitante1));
         when(mapper.toDTO(solicitante1)).thenReturn(solicitante1DTO);
 
-        Optional<SolicitanteDTO> response = repository.findById(solicitante1.getId()).map(mapper::toDTO);
+        Optional<SolicitanteDTO> response = repository.findById(solicitante1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 

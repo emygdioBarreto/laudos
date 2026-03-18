@@ -48,6 +48,10 @@ public class DuodenoService {
         return new DuodenoPageDTO(duodenos, pageDuodeno.getTotalPages(), pageDuodeno.getTotalElements());
     }
 
+    public List<DuodenoDTO> findAll() {
+        return repository.findAll().stream().map(mapper::toDTO).toList();
+    }
+
     public DuodenoDTO findById(@NotNull @Positive Integer id) {
         return this.repository.findById(id).map(mapper::toDTO)
                 .orElseThrow(() -> new RecordNotFoundException(Long.valueOf(id)));

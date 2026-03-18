@@ -60,8 +60,8 @@ class PancreaServiceTest {
 
         pancrea = new Pancrea(null, "Teste de gravação de frase de Pancreas");
         pancreaDTO = new PancreaDTO(null, "Teste de gravação de frase de Pancreas");
-        pancrea1 = new Pancrea(5, "teste de frase de pancreas");
-        pancrea1DTO = new PancreaDTO(5, "teste de frase de pancreas Teste!");
+        pancrea1 = new Pancrea(5L, "teste de frase de pancreas");
+        pancrea1DTO = new PancreaDTO(5L, "teste de frase de pancreas Teste!");
     }
 
     @Test
@@ -90,11 +90,11 @@ class PancreaServiceTest {
     @Test
     @DisplayName(value = "Atualizar a frase de pancreas com sucesso")
     void atualizarFrasePancreasComSucesso() {
-        when(repository.findById(pancrea1.getId())).thenReturn(Optional.ofNullable(pancrea1));
+        when(repository.findById(pancrea1.getId().intValue())).thenReturn(Optional.ofNullable(pancrea1));
         when(repository.save(pancrea1)).thenReturn(pancrea1);
         when(mapper.toDTO(pancrea1)).thenReturn(pancrea1DTO);
 
-        var varPancreas = repository.findById(pancrea1.getId());
+        var varPancreas = repository.findById(pancrea1.getId().intValue());
         if (varPancreas.isPresent()) {
             varPancreas.map(duo -> {
                 duo.setDescricao(pancrea1DTO.descricao());
@@ -116,7 +116,7 @@ class PancreaServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(pancrea1));
         doNothing().when(repository).delete(any());
 
-        var varPancrea = repository.findById(pancrea1.getId());
+        var varPancrea = repository.findById(pancrea1.getId().intValue());
         if (varPancrea.isPresent()) {
             repository.delete(varPancrea.get());
 
@@ -158,7 +158,7 @@ class PancreaServiceTest {
         when(repository.findById(anyInt())).thenReturn(Optional.ofNullable(pancrea1));
         when(mapper.toDTO(pancrea1)).thenReturn(pancrea1DTO);
 
-        Optional<PancreaDTO> response = repository.findById(pancrea1.getId()).map(mapper::toDTO);
+        Optional<PancreaDTO> response = repository.findById(pancrea1.getId().intValue()).map(mapper::toDTO);
         if (response.isPresent()) {
             assertNotNull(response);
 
