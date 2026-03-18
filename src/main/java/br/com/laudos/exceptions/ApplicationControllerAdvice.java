@@ -1,6 +1,5 @@
-package br.com.laudos.controller;
+package br.com.laudos.exceptions;
 
-import br.com.laudos.exceptions.RecordNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -15,10 +15,20 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
-                .info(new Info().title("Authentication Service").version("snapshot"))
-                .components(new Components().addSecuritySchemes("bearer-jwt",
-                new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")
-                .in(SecurityScheme.In.HEADER).name("Authorization")))
-                .addSecurityItem(new SecurityRequirement().addList("JavaInUseSecurityScheme"));
+                .info(new Info()
+                        .title("Authentication Service")
+                        .version("snapshot"))
+                .components(new Components()
+                        .addSecuritySchemes("bearer-jwt",
+                            new SecurityScheme()
+                                    .type(SecurityScheme.Type.HTTP)
+                                    .scheme("bearer")
+                                    .bearerFormat("JWT")
+                                    .in(SecurityScheme.In.HEADER)
+                                    .name("Authorization")
+                        )
+                )
+                .addSecurityItem(new SecurityRequirement().addList("bearer-jwt")   //"JavaInUseSecurityScheme")
+        );
     }
 }

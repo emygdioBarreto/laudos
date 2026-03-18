@@ -1,4 +1,4 @@
-package br.com.laudos.controller;
+package br.com.laudos.exceptions;
 
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
