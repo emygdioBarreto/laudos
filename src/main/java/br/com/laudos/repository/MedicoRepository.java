@@ -12,6 +12,4 @@ public interface MedicoRepository extends JpaRepository<Medico, String> {
 
     @Query(value = "SELECT * FROM MEDICO ORDER BY medico asc", nativeQuery = true)
     List<Medico> findAllMedicos();
-
-    Medico findByCrm(String crm);
 }

@@ -32,8 +32,8 @@ class LocalRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Local local1 = new Local(1, "Boris Berenstein Imagem e Laboratório");
-        Local local2 = new Local(2, "Boris Berenstein Imagem e Laboratório 2");
+        Local local1 = new Local(1L, "Boris Berenstein Imagem e Laboratório");
+        Local local2 = new Local(2L, "Boris Berenstein Imagem e Laboratório 2");
         locais = List.of(local1, local2);
     }
 

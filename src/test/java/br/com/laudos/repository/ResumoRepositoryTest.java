@@ -32,8 +32,8 @@ class ResumoRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Resumo resumo1 = new Resumo(1, "Exame normal do ponto de vista endoscópico.");
-        Resumo resumo2 = new Resumo(2, "Exame normal do ponto de vista endoscópico 2.");
+        Resumo resumo1 = new Resumo(1L, "Exame normal do ponto de vista endoscópico.");
+        Resumo resumo2 = new Resumo(2L, "Exame normal do ponto de vista endoscópico 2.");
         resumos = List.of(resumo1, resumo2);
     }
 

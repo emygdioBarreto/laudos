@@ -29,8 +29,8 @@ class PancreaRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Pancrea intestino1 = new Pancrea(1, "Exame normal do ponto de vista endoscópico.");
-        Pancrea intestino2 = new Pancrea(2, "Exame normal do ponto de vista endoscópico 2.");
+        Pancrea intestino1 = new Pancrea(1L, "Exame normal do ponto de vista endoscópico.");
+        Pancrea intestino2 = new Pancrea(2L, "Exame normal do ponto de vista endoscópico 2.");
         pancreas = List.of(intestino1, intestino2);
     }
 

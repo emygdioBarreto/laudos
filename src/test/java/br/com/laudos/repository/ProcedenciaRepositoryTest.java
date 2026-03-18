@@ -32,8 +32,8 @@ class ProcedenciaRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Procedencia procedencia1 = new Procedencia(1, "Hospital");
-        Procedencia procedencia2 = new Procedencia(2, "Pronto Socorro");
+        Procedencia procedencia1 = new Procedencia(1L, "Hospital");
+        Procedencia procedencia2 = new Procedencia(2L, "Pronto Socorro");
         procedencias = List.of(procedencia1, procedencia2);
     }
 

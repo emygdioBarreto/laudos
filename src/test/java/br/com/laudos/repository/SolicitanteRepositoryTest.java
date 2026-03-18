@@ -32,8 +32,8 @@ class SolicitanteRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Solicitante solicitante1 = new Solicitante(1, "Solicitante 1");
-        Solicitante solicitante2 = new Solicitante(2, "Solicitante 2");
+        Solicitante solicitante1 = new Solicitante(1L, "Solicitante 1");
+        Solicitante solicitante2 = new Solicitante(2L, "Solicitante 2");
         solicitantes = List.of(solicitante1, solicitante2);
     }
 

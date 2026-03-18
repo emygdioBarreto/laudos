@@ -32,8 +32,8 @@ class TipoExameRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        TipoExame tipoExame1 = new TipoExame(1, "Endoscopia Digestiva Alta", "C", true, true,true, false, false);
-        TipoExame tipoExame2 = new TipoExame(6, "Endoscopia Digestiva Alta + Polipectomia", "C", true, true,true, false, false);
+        TipoExame tipoExame1 = new TipoExame(1L, "Endoscopia Digestiva Alta", "C", true, true,true, false, false);
+        TipoExame tipoExame2 = new TipoExame(6L, "Endoscopia Digestiva Alta + Polipectomia", "C", true, true,true, false, false);
         tipoExames = List.of(tipoExame1, tipoExame2);
     }
 

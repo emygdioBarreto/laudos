@@ -32,8 +32,8 @@ class PremedicacaoRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Premedicacao premedicacao1 = new Premedicacao(1, "Xylocaína tópica à 10%.");
-        Premedicacao premedicacao2 = new Premedicacao(2, "Xylocaína tópica à 15%.");
+        Premedicacao premedicacao1 = new Premedicacao(1L, "Xylocaína tópica à 10%.");
+        Premedicacao premedicacao2 = new Premedicacao(2L, "Xylocaína tópica à 15%.");
         premedicacoes = List.of(premedicacao1, premedicacao2);
     }
 
@@ -52,10 +52,10 @@ class PremedicacaoRepositoryTest {
 
         assertEquals(premedicacoes.get(0), response.get(0));
         assertEquals(premedicacoes.get(0).getId(), response.get(0).getId());
-        assertEquals(premedicacoes.get(0).getAnalgesia(), response.get(0).getAnalgesia());
+        assertEquals(premedicacoes.get(0).getDescricao(), response.get(0).getDescricao());
 
         assertEquals(premedicacoes.get(1), response.get(1));
         assertEquals(premedicacoes.get(1).getId(), response.get(1).getId());
-        assertEquals(premedicacoes.get(1).getAnalgesia(), response.get(1).getAnalgesia());
+        assertEquals(premedicacoes.get(1).getDescricao(), response.get(1).getDescricao());
     }
 }

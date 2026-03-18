@@ -32,8 +32,8 @@ class EquipamentoRepositoryTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Equipamento equip1 = new Equipamento(1, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
-        Equipamento equip2 = new Equipamento(2, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
+        Equipamento equip1 = new Equipamento(1L, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
+        Equipamento equip2 = new Equipamento(2L, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
         equipamentos = List.of(equip1, equip2);
     }
 
