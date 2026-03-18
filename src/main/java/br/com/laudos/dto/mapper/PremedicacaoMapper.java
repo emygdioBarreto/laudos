@@ -11,7 +11,7 @@ public class PremedicacaoMapper {
         if (premedicacao == null) {
             return null;
         }
-        return new PremedicacaoDTO(premedicacao.getId(), premedicacao.getPremedicacao());
+        return new PremedicacaoDTO(premedicacao.getId(), premedicacao.getDescricao());
     }
     
     public Premedicacao toEntity(PremedicacaoDTO premedicacaoDTO) {
@@ -22,7 +22,7 @@ public class PremedicacaoMapper {
         if (premedicacaoDTO.id() != null) {
             premedicacao.setId(premedicacaoDTO.id());
         }
-        premedicacao.setPremedicacao(premedicacaoDTO.premedicacao());
+        premedicacao.setDescricao(premedicacaoDTO.descricao());
         return premedicacao;
     }
 }

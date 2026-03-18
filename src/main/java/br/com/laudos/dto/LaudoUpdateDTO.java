@@ -1,34 +1,35 @@
 package br.com.laudos.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
 
 public record LaudoUpdateDTO(
-        Long id,
-        @JsonProperty("datalaudo")
+        Long idLaudo,
         @JsonFormat(pattern = "yyyy-MM-dd")
-        String data,
-        Integer equipamentoId,
-        String paciente,
+        @NotNull LocalDate dataCriacao,
+        @NotNull Long equipamentoId,
+        @NotBlank String paciente,
         String idade,
         @JsonFormat(pattern = "yyyy-MM-dd")
-        String nascimento,
-        String sexo,
-        Integer solicitanteId,
-        Integer procedenciaId,
-        Integer premedicacaoId,
-        Integer localExameId,
-        String medicoExecutorCrm,
-        Integer resumoId,
+        @NotNull LocalDate nascimento,
+        @NotNull String sexo,
+        @NotNull Long solicitanteId,
+        @NotNull Long procedenciaId,
+        @NotNull Long premedicacaoId,
+        @NotNull Long localExameId,
+        @NotNull String medicoExecutorCrm,
+        @NotNull Long resumoId,
         String observacaoClinica,
-        @Column(name = "esofago", columnDefinition = "TEXT") String esofago,
-        @Column(name = "estomago", columnDefinition = "TEXT") String estomago,
-        @Column(name = "duodeno", columnDefinition = "TEXT") String duodeno,
-        @Column(name = "intestino", columnDefinition = "TEXT") String intestino,
-        @Column(name = "pancreas", columnDefinition = "TEXT") String pancreas,
+        String esofago,
+        String estomago,
+        String duodeno,
+        String intestino,
+        String pancreas,
         String solucao,
         String conclusao,
         String observacao,
-        Integer tipoExameId) {
+        @NotNull Long tipoExameId) {
 }

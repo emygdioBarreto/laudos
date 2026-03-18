@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 
 public record TipoExameDTO(
-        Integer id,
+        Long id,
         @NotNull @NotBlank @Length(max = 150) String descricao,
         @NotNull @NotBlank String ordena,
         boolean esofago,

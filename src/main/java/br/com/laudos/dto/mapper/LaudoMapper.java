@@ -1,12 +1,10 @@
 package br.com.laudos.dto.mapper;
 
-import br.com.laudos.domain.Laudo;
+import br.com.laudos.domain.*;
+import br.com.laudos.dto.LaudoCreateDTO;
 import br.com.laudos.dto.LaudoDTO;
-import jakarta.validation.Valid;
+import br.com.laudos.dto.LaudoUpdateDTO;
 import org.springframework.stereotype.Component;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 @Component
 public class LaudoMapper {
@@ -15,21 +13,27 @@ public class LaudoMapper {
         if (laudo == null) {
             return null;
         }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return new LaudoDTO(
-                laudo.getId(),
-                sdf.format(laudo.getData()),
-                laudo.getEquipamento(),
+                laudo.getIdLaudo(),
+                laudo.getDataCriacao(),
+                laudo.getEquipamento().getId(),
+                laudo.getEquipamento().getDescricao(),
                 laudo.getPaciente(),
                 laudo.getIdade(),
-                sdf.format(laudo.getNascimento()),
+                laudo.getNascimento(),
                 laudo.getSexo(),
-                laudo.getSolicitante(),
-                laudo.getProcedencia(),
-                laudo.getPremedicacao(),
-                laudo.getLocalExame(),
-                laudo.getMedicoExecutor(),
-                laudo.getResumo(),
+                laudo.getSolicitante().getId(),
+                laudo.getSolicitante().getMedicoSolicitante(),
+                laudo.getProcedencia().getId(),
+                laudo.getProcedencia().getDescricao(),
+                laudo.getPremedicacao().getId(),
+                laudo.getPremedicacao().getDescricao(),
+                laudo.getLocalExame().getId(),
+                laudo.getLocalExame().getDescricao(),
+                laudo.getMedicoExecutor().getCrm(),
+                laudo.getMedicoExecutor().getMedicoExecutor(),
+                laudo.getResumo().getId(),
+                laudo.getResumo().getDescricao(),
                 laudo.getObservacaoClinica(),
                 laudo.getEsofago(),
                 laudo.getEstomago(),
@@ -39,40 +43,65 @@ public class LaudoMapper {
                 laudo.getSolucao(),
                 laudo.getConclusao(),
                 laudo.getObservacao(),
-                laudo.getTipoExame());
+                laudo.getTipoExame().getId(),
+                laudo.getTipoExame().getDescricao());
     }
 
-    public Laudo toEntity(@Valid LaudoDTO laudoDTO) throws ParseException {
-        if (laudoDTO == null) {
-            return null;
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    public Laudo toEntityCreate(LaudoCreateDTO dto, LaudoRefs refs) {
         Laudo laudo = new Laudo();
-        if (laudoDTO.id() != null) {
-            laudo.setId(laudoDTO.id());
-        }
-        laudo.setData(sdf.parse(laudoDTO.data()));
-        laudo.setEquipamento(laudoDTO.equipamento());
-        laudo.setPaciente(laudoDTO.paciente());
-        laudo.setIdade(laudo.getIdade());
-        laudo.setNascimento(sdf.parse(laudoDTO.nascimento()));
-        laudo.setSexo(laudoDTO.sexo());
-        laudo.setSolicitante(laudoDTO.solicitante());
-        laudo.setProcedencia(laudoDTO.procedencia());
-        laudo.setPremedicacao(laudoDTO.premedicacao());
-        laudo.setLocalExame(laudoDTO.localExame());
-        laudo.setMedicoExecutor(laudoDTO.medicoExecutor());
-        laudo.setResumo(laudoDTO.resumo());
-        laudo.setObservacaoClinica(laudoDTO.observacaoClinica());
-        laudo.setEsofago(laudoDTO.esofago());
-        laudo.setEstomago(laudoDTO.estomago());
-        laudo.setDuodeno(laudoDTO.duodeno());
-        laudo.setIntestino(laudoDTO.intestino());
-        laudo.setPancreas(laudoDTO.pancreas());
-        laudo.setSolucao(laudoDTO.solucao());
-        laudo.setConclusao(laudoDTO.conclusao());
-        laudo.setObservacao(laudoDTO.observacao());
-        laudo.setTipoExame(laudoDTO.tipoExame());
-         return laudo;
+
+        laudo.setDataCriacao(dto.dataCriacao());
+        laudo.setEquipamento(refs.equipamento());
+        laudo.setPaciente(dto.paciente());
+        laudo.setIdade(dto.idade());
+        laudo.setNascimento(dto.nascimento());
+        laudo.setSexo(dto.sexo());
+
+        laudo.setSolicitante(refs.solicitante());
+        laudo.setProcedencia(refs.procedencia());
+        laudo.setPremedicacao(refs.premedicacao());
+        laudo.setLocalExame(refs.localExame());
+        laudo.setTipoExame(refs.tipoExame());
+        laudo.setMedicoExecutor(refs.medicoExecutor());
+        laudo.setResumo(refs.resumo());
+
+        laudo.setObservacaoClinica(dto.observacaoClinica());
+        laudo.setEsofago(dto.esofago());
+        laudo.setEstomago(dto.estomago());
+        laudo.setDuodeno(dto.duodeno());
+        laudo.setIntestino(dto.intestino());
+        laudo.setPancreas(dto.pancreas());
+        laudo.setSolucao(dto.solucao());
+        laudo.setConclusao(dto.conclusao());
+        laudo.setObservacao(dto.observacao());
+
+        return laudo;
+    }
+
+    public void toEntityUpdate(Laudo laudo, LaudoUpdateDTO dto, LaudoRefs refs) {
+
+        laudo.setDataCriacao(dto.dataCriacao());
+        laudo.setEquipamento(refs.equipamento());
+        laudo.setSolicitante(refs.solicitante());
+        laudo.setProcedencia(refs.procedencia());
+        laudo.setPremedicacao(refs.premedicacao());
+        laudo.setLocalExame(refs.localExame());
+        laudo.setResumo(refs.resumo());
+        laudo.setTipoExame(refs.tipoExame());
+        laudo.setMedicoExecutor(refs.medicoExecutor());
+
+        laudo.setPaciente(dto.paciente());
+        laudo.setIdade(dto.idade());
+        laudo.setNascimento(dto.nascimento());
+        laudo.setSexo(dto.sexo());
+        laudo.setObservacaoClinica(dto.observacaoClinica());
+        laudo.setEsofago(dto.esofago());
+        laudo.setEstomago(dto.estomago());
+        laudo.setDuodeno(dto.duodeno());
+        laudo.setIntestino(dto.intestino());
+        laudo.setPancreas(dto.pancreas());
+        laudo.setSolucao(dto.solucao());
+        laudo.setConclusao(dto.conclusao());
+        laudo.setObservacao(dto.observacao());
     }
 }
