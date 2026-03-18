@@ -55,8 +55,8 @@ class PancreaControllerTest {
 
         pancrea = new Pancrea(null, "Teste de gravação de frase de Pancreas");
         pancreaDTO = new PancreaDTO(null, "Teste de gravação de frase de Pancreas");
-        pancrea1 = new Pancrea(5, "teste de frase de pancreas");
-        pancreas1DTO = new PancreaDTO(5, "teste de frase de pancreas Teste!");
+        pancrea1 = new Pancrea(5L, "teste de frase de pancreas");
+        pancreas1DTO = new PancreaDTO(5L, "teste de frase de pancreas Teste!");
 
         pancreas.add(pancreaDTO);
         pancreasPageDTO = new PancreaPageDTO(pancreas, PAGE, SIZE);
@@ -85,7 +85,7 @@ class PancreaControllerTest {
     void atualizarFrasePancreasComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(pancreas1DTO);
 
-        PancreaDTO response = service.update(pancreas1DTO.id(), pancreas1DTO);
+        PancreaDTO response = service.update(pancreas1DTO.id().intValue(), pancreas1DTO);
 
         assertNotNull(response);
         assertEquals(PancreaDTO.class, pancreas1DTO.getClass());
@@ -101,7 +101,7 @@ class PancreaControllerTest {
     void apagarFrasePancreasPorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(pancreas1DTO.id());
+        service.delete(pancreas1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -129,7 +129,7 @@ class PancreaControllerTest {
     void recuperarFrasePancreasPorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(pancreas1DTO);
 
-        PancreaDTO response = service.findById(pancrea1.getId());
+        PancreaDTO response = service.findById(pancrea1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(PancreaDTO.class, response.getClass());

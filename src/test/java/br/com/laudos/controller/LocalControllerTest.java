@@ -55,8 +55,8 @@ class LocalControllerTest {
 
         local = new Local(null, "Teste de gravação de Local");
         localDTO = new LocalDTO(null, "Teste de gravação de Local");
-        local1 = new Local(2, "Boris Berenstein Imagem e Laboratório");
-        local1DTO = new LocalDTO(2, "Boris Berenstein Imagem e Laboratório Teste!");
+        local1 = new Local(2L, "Boris Berenstein Imagem e Laboratório");
+        local1DTO = new LocalDTO(2L, "Boris Berenstein Imagem e Laboratório Teste!");
 
         locais.add(localDTO);
         localPageDTO = new LocalPageDTO(locais, PAGE, SIZE);
@@ -85,7 +85,7 @@ class LocalControllerTest {
     void atualizarFraseLocalComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(local1DTO);
 
-        LocalDTO response = service.update(local1DTO.id(), local1DTO);
+        LocalDTO response = service.update(local1DTO.id().intValue(), local1DTO);
 
         assertNotNull(response);
         assertEquals(LocalDTO.class, local1DTO.getClass());
@@ -101,7 +101,7 @@ class LocalControllerTest {
     void apagarFraseLocalPorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(local1DTO.id());
+        service.delete(local1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -129,7 +129,7 @@ class LocalControllerTest {
     void recuperarFraseLocalPorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(local1DTO);
 
-        LocalDTO response = service.findById(local1.getId());
+        LocalDTO response = service.findById(local1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(LocalDTO.class, response.getClass());

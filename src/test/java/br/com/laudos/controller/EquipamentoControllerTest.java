@@ -53,8 +53,8 @@ class EquipamentoControllerTest {
 
         equipamento = new Equipamento(null, "Teste de Gravação de equipamento", "30", "10", "10", "10", "1", "Recife", "C");
         equipamentoDTO = new EquipamentoDTO(null, "Teste de Gravação de equipamento", "30", "10", "10", "10", "1", "Recife", "C");
-        equipamento1 = new Equipamento(1, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
-        equipamento1DTO = new EquipamentoDTO(1, "Pentax EG290I Teste", "30", "10", "10", "10", "1", "Recife", "C");
+        equipamento1 = new Equipamento(1L, "Pentax EG290I", "30", "10", "10", "10", "1", "Recife", "C");
+        equipamento1DTO = new EquipamentoDTO(1L, "Pentax EG290I Teste", "30", "10", "10", "10", "1", "Recife", "C");
 
         equipamentos.add(equipamentoDTO);
         equipamentoPageDTO = new EquipamentoPageDTO(equipamentos, PAGE, SIZE);
@@ -62,7 +62,7 @@ class EquipamentoControllerTest {
 
     @Test
     @DisplayName(value = "Salvar Novo Equipamento com sucesso")
-    void salvarNovoEquipametoComSucesso() {
+    void salvarNovoEquipamentoComSucesso() {
         when(service.salvar(any())).thenReturn(equipamentoDTO);
 
         EquipamentoDTO response = service.salvar(mapper.toDTO(equipamento));
@@ -96,7 +96,7 @@ class EquipamentoControllerTest {
     @Test
     @DisplayName(value = "Atualizar Equipamento com sucesso")
     void atualizarEquipamentoComSucesso() {
-        when(service.update(anyInt(), any())).thenReturn(equipamento1DTO);
+        when(service.update(anyLong(), any())).thenReturn(equipamento1DTO);
 
         EquipamentoDTO response = service.update(equipamento1DTO.id(), equipamento1DTO);
 
@@ -154,7 +154,7 @@ class EquipamentoControllerTest {
     @Test
     @DisplayName(value = "Recuperar equipamento por Id com sucesso.")
     void recuperarEquipamentoPorIdComSucesso() {
-        when(service.findById(anyInt())).thenReturn(equipamento1DTO);
+        when(service.findById(anyLong())).thenReturn(equipamento1DTO);
 
         EquipamentoDTO response = service.findById(equipamento1.getId());
 
@@ -166,10 +166,10 @@ class EquipamentoControllerTest {
     @Test
     @DisplayName(value = "Gerar exceção quando pesquisar equipamento por um ID invalido.")
     void gerarExcecaoQuandoPesquisarEquipamentoPorIdInvalido() {
-        when(service.findById(anyInt())).thenThrow(new RecordNotFoundException(REGISTRO_NAO_ENCONTRADO));
+        when(service.findById(anyLong())).thenThrow(new RecordNotFoundException(REGISTRO_NAO_ENCONTRADO));
 
         try{
-            service.findById(2);
+            service.findById(2L);
         } catch (Exception ex) {
             assertEquals(RecordNotFoundException.class, ex.getClass());
             assertEquals(REGISTRO_NAO_ENCONTRADO, ex.getMessage());

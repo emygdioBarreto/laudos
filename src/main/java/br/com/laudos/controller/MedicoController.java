@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/medicos")
+@RequestMapping("/medicos")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Médico Executor", description = "Método para salvar, editar, listar e remover dados do Médico Executor")

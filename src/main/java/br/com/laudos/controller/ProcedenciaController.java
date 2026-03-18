@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/procedencias")
+@RequestMapping("/procedencias")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Procedências", description = "Método para salvar, editar, listar e remover dados de frases de Procedências")

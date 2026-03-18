@@ -55,8 +55,8 @@ class SolicitanteControllerTest {
 
         solicitante = new Solicitante(null, "Teste de gravação de frase de Solicitante");
         solicitanteDTO = new SolicitanteDTO(null, "Teste de gravação de frase de Solicitante");
-        solicitante1 = new Solicitante(3, "Dr. Moacyr Novaes");
-        solicitante1DTO = new SolicitanteDTO(3, "Dr. Moacyr Novaes Teste!");
+        solicitante1 = new Solicitante(3L, "Dr. Moacyr Novaes");
+        solicitante1DTO = new SolicitanteDTO(3L, "Dr. Moacyr Novaes Teste!");
 
         solicitantes.add(solicitanteDTO);
         solicitantePageDTO = new SolicitantePageDTO(solicitantes, PAGE, SIZE);
@@ -85,7 +85,7 @@ class SolicitanteControllerTest {
     void atualizarFraseSolicitanteComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(solicitante1DTO);
 
-        SolicitanteDTO response = service.update(solicitante1DTO.id(), solicitante1DTO);
+        SolicitanteDTO response = service.update(solicitante1DTO.id().intValue(), solicitante1DTO);
 
         assertNotNull(response);
         assertEquals(SolicitanteDTO.class, solicitante1DTO.getClass());
@@ -101,7 +101,7 @@ class SolicitanteControllerTest {
     void apagarFraseSolicitantePorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(solicitante1DTO.id());
+        service.delete(solicitante1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -129,7 +129,7 @@ class SolicitanteControllerTest {
     void recuperarFraseSolicitantePorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(solicitante1DTO);
 
-        SolicitanteDTO response = service.findById(solicitante1.getId());
+        SolicitanteDTO response = service.findById(solicitante1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(SolicitanteDTO.class, response.getClass());

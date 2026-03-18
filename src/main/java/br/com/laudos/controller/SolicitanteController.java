@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/solicitantes")
+@RequestMapping("/solicitantes")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Solicitantes", description = "Método para salvar, editar, listar e remover dados de frases de Solicitantes")

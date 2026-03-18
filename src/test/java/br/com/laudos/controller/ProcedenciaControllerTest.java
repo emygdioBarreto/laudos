@@ -55,8 +55,8 @@ class ProcedenciaControllerTest {
 
         procedencia = new Procedencia(null, "Teste de gravação de frase de Procedencia");
         procedenciaDTO = new ProcedenciaDTO(null, "Teste de gravação de frase de Procedencia");
-        procedencia1 = new Procedencia(3, "Sul América");
-        procedencia1DTO = new ProcedenciaDTO(3, "Sul América Teste!");
+        procedencia1 = new Procedencia(3L, "Sul América");
+        procedencia1DTO = new ProcedenciaDTO(3L, "Sul América Teste!");
 
         procedencias.add(procedenciaDTO);
         procedenciaPageDTO = new ProcedenciaPageDTO(procedencias, PAGE, SIZE);
@@ -85,7 +85,7 @@ class ProcedenciaControllerTest {
     void atualizarFraseProcedenciaComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(procedencia1DTO);
 
-        ProcedenciaDTO response = service.update(procedencia1DTO.id(), procedencia1DTO);
+        ProcedenciaDTO response = service.update(procedencia1DTO.id().intValue(), procedencia1DTO);
 
         assertNotNull(response);
         assertEquals(ProcedenciaDTO.class, procedencia1DTO.getClass());
@@ -101,7 +101,7 @@ class ProcedenciaControllerTest {
     void apagarFraseProcedenciaPorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(procedencia1DTO.id());
+        service.delete(procedencia1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -129,7 +129,7 @@ class ProcedenciaControllerTest {
     void recuperarFraseProcedenciaPorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(procedencia1DTO);
 
-        ProcedenciaDTO response = service.findById(procedencia1.getId());
+        ProcedenciaDTO response = service.findById(procedencia1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(ProcedenciaDTO.class, response.getClass());

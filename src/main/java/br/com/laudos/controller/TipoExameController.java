@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/tipoexames")
+@RequestMapping("/tipoexames")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Tipos de Exames", description = "Método para salvar, editar, listar e remover dados de frases de Tipos de Exames")

@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/drogas")
+@RequestMapping("/drogas")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Drogas", description = "Método para salvar, editar, listar e remover nomes de drogas utilizadas")

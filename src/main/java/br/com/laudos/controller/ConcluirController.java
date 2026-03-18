@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/conclusoes")
+@RequestMapping("/conclusoes")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Concluir", description = "Método para salvar, editar, listar e remover dados de frases de conclusão")

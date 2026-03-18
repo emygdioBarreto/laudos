@@ -55,8 +55,8 @@ class PremedicacaoControllerTest {
 
         premedicacao = new Premedicacao(null, "Teste de gravação de frase de Premedicacao");
         premedicacaoDTO = new PremedicacaoDTO(null, "Teste de gravação de frase de Premedicacao");
-        premedicacao1 = new Premedicacao(1, "Xylocaína tópica à 10%.");
-        premedicacao1DTO = new PremedicacaoDTO(1, "Xylocaína tópica à 10%. Teste!");
+        premedicacao1 = new Premedicacao(1L, "Xylocaína tópica à 10%.");
+        premedicacao1DTO = new PremedicacaoDTO(1L, "Xylocaína tópica à 10%. Teste!");
 
         premedicacoes.add(premedicacaoDTO);
         premedicacaoPageDTO = new PremedicacaoPageDTO(premedicacoes, PAGE, SIZE);
@@ -72,12 +72,12 @@ class PremedicacaoControllerTest {
         assertNotNull(response);
         assertEquals(PremedicacaoDTO.class, response.getClass());
         assertEquals(premedicacao.getId(), response.id());
-        assertEquals(premedicacao.getPremedicacao(), response.premedicacao());
+        assertEquals(premedicacao.getDescricao(), response.descricao());
 
         verify(mapper, times(1)).toDTO(premedicacao);
 
         assertThat(response).usingRecursiveComparison().isEqualTo(premedicacaoDTO);
-        assertThat(response.premedicacao()).isEqualTo(premedicacaoDTO.premedicacao());
+        assertThat(response.descricao()).isEqualTo(premedicacaoDTO.descricao());
     }
 
     @Test
@@ -85,15 +85,15 @@ class PremedicacaoControllerTest {
     void atualizarFrasePremedicacaoComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(premedicacao1DTO);
 
-        PremedicacaoDTO response = service.update(premedicacao1DTO.id(), premedicacao1DTO);
+        PremedicacaoDTO response = service.update(premedicacao1DTO.id().intValue(), premedicacao1DTO);
 
         assertNotNull(response);
         assertEquals(PremedicacaoDTO.class, premedicacao1DTO.getClass());
         assertEquals(premedicacao1DTO.id(), response.id());
-        assertEquals(premedicacao1DTO.premedicacao(), response.premedicacao());
+        assertEquals(premedicacao1DTO.descricao(), response.descricao());
 
         assertThat(response).usingRecursiveComparison().isEqualTo(premedicacao1DTO);
-        assertThat(response.premedicacao()).isEqualTo(premedicacao1DTO.premedicacao());
+        assertThat(response.descricao()).isEqualTo(premedicacao1DTO.descricao());
     }
 
     @Test
@@ -101,7 +101,7 @@ class PremedicacaoControllerTest {
     void apagarFrasePremedicacaoPorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(premedicacao1DTO.id());
+        service.delete(premedicacao1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -121,7 +121,7 @@ class PremedicacaoControllerTest {
         assertEquals(SIZE, response.totalElements());
 
         assertEquals(premedicacaoDTO.id(), response.premedicacoes().get(0).id());
-        assertEquals(premedicacaoDTO.premedicacao(), response.premedicacoes().get(0).premedicacao());
+        assertEquals(premedicacaoDTO.descricao(), response.premedicacoes().get(0).descricao());
     }
 
     @Test
@@ -129,12 +129,12 @@ class PremedicacaoControllerTest {
     void recuperarFrasePremedicacaoPorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(premedicacao1DTO);
 
-        PremedicacaoDTO response = service.findById(premedicacao1.getId());
+        PremedicacaoDTO response = service.findById(premedicacao1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(PremedicacaoDTO.class, response.getClass());
         assertEquals(premedicacao1DTO.id(), response.id());
-        assertEquals(premedicacao1DTO.premedicacao(), response.premedicacao());
+        assertEquals(premedicacao1DTO.descricao(), response.descricao());
     }
 
     @Test

@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/equipamentos")
+@RequestMapping("/equipamentos")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Descrição de Equipamento", description = "Método para salvar, editar, listar e remover dados de Equipamentos")
@@ -58,7 +58,7 @@ public class EquipamentoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<EquipamentoDTO> update(@PathVariable @NotNull @Positive Integer id,
+    public ResponseEntity<EquipamentoDTO> update(@PathVariable @NotNull @Positive Long id,
                                  @RequestBody @Valid @NotNull EquipamentoDTO equipamentoDTO) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(id, equipamentoDTO));
     }
@@ -74,7 +74,7 @@ public class EquipamentoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public void delete(@PathVariable @NotNull @Positive Integer id) {
+    public void delete(@PathVariable @NotNull @Positive Long id) {
         service.delete(id);
     }
 
@@ -115,7 +115,7 @@ public class EquipamentoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<EquipamentoDTO> findById(@PathVariable @NotNull @Positive Integer id) {
+    public ResponseEntity<EquipamentoDTO> findById(@PathVariable @NotNull @Positive Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findById(id));
     }
 }

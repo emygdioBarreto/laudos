@@ -55,8 +55,8 @@ class ResumoControllerTest {
 
         resumo = new Resumo(null, "Teste de gravação de frase de Resumo");
         resumoDTO = new ResumoDTO(null, "Teste de gravação de frase de Resumo");
-        resumo1 = new Resumo(2, "resumo clinico Inexistente 39");
-        resumo1DTO = new ResumoDTO(2, "resumo clinico Inexistente 39 Teste!");
+        resumo1 = new Resumo(2L, "resumo clinico Inexistente 39");
+        resumo1DTO = new ResumoDTO(2L, "resumo clinico Inexistente 39 Teste!");
 
         resumos.add(resumoDTO);
         resumoPageDTO = new ResumoPageDTO(resumos, PAGE, SIZE);
@@ -85,7 +85,7 @@ class ResumoControllerTest {
     void atualizarFraseResumoComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(resumo1DTO);
 
-        ResumoDTO response = service.update(resumo1DTO.id(), resumo1DTO);
+        ResumoDTO response = service.update(resumo1DTO.id().intValue(), resumo1DTO);
 
         assertNotNull(response);
         assertEquals(ResumoDTO.class, resumo1DTO.getClass());
@@ -101,7 +101,7 @@ class ResumoControllerTest {
     void apagarFraseResumoPorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(resumo1DTO.id());
+        service.delete(resumo1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -129,7 +129,7 @@ class ResumoControllerTest {
     void recuperarFraseResumoPorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(resumo1DTO);
 
-        ResumoDTO response = service.findById(resumo1.getId());
+        ResumoDTO response = service.findById(resumo1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(ResumoDTO.class, response.getClass());

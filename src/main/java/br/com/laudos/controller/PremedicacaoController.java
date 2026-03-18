@@ -26,7 +26,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/premedicacoes")
+@RequestMapping("/premedicacoes")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Premedicações", description = "Método para salvar, editar, listar e remover dados de frases de Premedicações")

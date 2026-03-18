@@ -55,8 +55,8 @@ class TipoExameControllerTest {
 
         tipoExame = new TipoExame(null, "Teste de gravação de Tipos de Exames", "C", false, false, false, false, false);
         tipoExameDTO = new TipoExameDTO(null, "Teste de gravação de Tipos de Exames", "C", false, false, false, false, false);
-        tipoExame1 = new TipoExame(1, "Endoscopia Digestiva Alta", "C", true, true, true, false, false);
-        tipoExame1DTO = new TipoExameDTO(1, "Endoscopia Digestiva Alta Teste!", "C", true, true, true, false, false);
+        tipoExame1 = new TipoExame(1L, "Endoscopia Digestiva Alta", "C", true, true, true, false, false);
+        tipoExame1DTO = new TipoExameDTO(1L, "Endoscopia Digestiva Alta Teste!", "C", true, true, true, false, false);
 
         tipoExames.add(tipoExameDTO);
         tipoExamePageDTO = new TipoExamePageDTO(tipoExames, PAGE, SIZE);
@@ -85,7 +85,7 @@ class TipoExameControllerTest {
     void atualizarFraseTipoExameComSucesso() {
         when(service.update(anyInt(), any())).thenReturn(tipoExame1DTO);
 
-        TipoExameDTO response = service.update(tipoExame1DTO.id(), tipoExame1DTO);
+        TipoExameDTO response = service.update(tipoExame1DTO.id().intValue(), tipoExame1DTO);
 
         assertNotNull(response);
         assertEquals(TipoExameDTO.class, tipoExame1DTO.getClass());
@@ -101,7 +101,7 @@ class TipoExameControllerTest {
     void apagarFraseTipoExamePorIdComSucesso() {
         doNothing().when(service).delete(any());
 
-        service.delete(tipoExame1DTO.id());
+        service.delete(tipoExame1DTO.id().intValue());
 
         verify(service, times(1)).delete(any());
     }
@@ -129,7 +129,7 @@ class TipoExameControllerTest {
     void recuperarFraseTipoExamePorIdComSucesso() {
         when(service.findById(anyInt())).thenReturn(tipoExame1DTO);
 
-        TipoExameDTO response = service.findById(tipoExame1.getId());
+        TipoExameDTO response = service.findById(tipoExame1.getId().intValue());
 
         assertNotNull(response);
         assertEquals(TipoExameDTO.class, response.getClass());

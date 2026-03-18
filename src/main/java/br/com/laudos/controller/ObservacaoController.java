@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/observacoes")
+@RequestMapping("/observacoes")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Observações", description = "Método para salvar, editar, listar e remover dados de frases de Observações")

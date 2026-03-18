@@ -45,7 +45,7 @@ public class ConcluirCucumber extends CucumberDefsDefault {
 
     @Quando("eu faco uma requisicao GET para obter as frases de concluir")
     public void euFacoUmaRequisicaoGETParaObterAsFrasesDeConcluir() throws URISyntaxException {
-        testRestTemplate.getForEntity(new URI("/api/conclusoes"), Concluir[].class);
+        testRestTemplate.getForEntity(new URI("/conclusoes"), Concluir[].class);
     }
 
     @Entao("a resposta deve ter o status code {int}")

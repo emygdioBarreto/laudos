@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/observacoesClinicas")
+@RequestMapping("/observacoesClinicas")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Observações Clínicas", description = "Método para salvar, editar, listar e remover frases de Observações Clínicas")

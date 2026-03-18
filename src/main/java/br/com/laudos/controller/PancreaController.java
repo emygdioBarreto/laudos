@@ -20,9 +20,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Validated
 @RestController
-@RequestMapping("/api/pancreas")
+@RequestMapping("/pancreas")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Pancreas", description = "Método para salvar, editar, listar e remover dados de frases de Pancreas")
@@ -90,6 +92,20 @@ public class PancreaController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
+    @GetMapping("/frases")
+    @Operation(summary = "Listar Esôfagos", description = "Método para Listar todas as frases de Esôfagos cadastradas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de frases de Esôfagos carregadas com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga das frases de Esôfagos"),
+            @ApiResponse(responseCode = "401", description = "Login ou senha inválidos"),
+            @ApiResponse(responseCode = "403", description = "Login não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor")
+    })
+    public List<PancreaDTO> findAll() {
+        return service.findAll();
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")

@@ -1,6 +1,7 @@
 package br.com.laudos.controller;
 
 import br.com.laudos.config.SecurityConfig;
+import br.com.laudos.dto.LaudoCreateDTO;
 import br.com.laudos.dto.LaudoDTO;
 import br.com.laudos.dto.LaudoUpdateDTO;
 import br.com.laudos.dto.pages.LaudoPageDTO;
@@ -25,7 +26,7 @@ import java.text.ParseException;
 
 @Validated
 @RestController
-@RequestMapping("/api/laudos")
+@RequestMapping("/laudos")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Laudos", description = "Método para salvar, editar, listar e remover Laudos")
@@ -44,12 +45,12 @@ public class LaudoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public ResponseEntity<LaudoDTO> salvar(@RequestBody @Valid @NotNull LaudoDTO laudoDTO) throws ParseException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(laudoDTO));
+    public ResponseEntity<LaudoDTO> salvar(@RequestBody @Valid @NotNull LaudoCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.salvar(dto));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
-    @PutMapping("/{id}")
+    @PutMapping("/{idLaudo}")
     @Operation(summary = "Atualizar Laudo", description = "Método para atualizar o Laudo selecionado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Laudo atualizado com sucesso!"),
@@ -58,14 +59,15 @@ public class LaudoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public LaudoDTO update(@PathVariable @NotNull @Positive Long id,
-                           @RequestBody @Valid @NotNull LaudoUpdateDTO laudoUpdateDTODTO) throws ParseException {
-        return service.update(id, laudoUpdateDTODTO);
+    public ResponseEntity<LaudoDTO> update(
+            @PathVariable @NotNull @Positive Long idLaudo,
+            @RequestBody @Valid @NotNull LaudoUpdateDTO laudoUpdateDTO) throws ParseException {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(idLaudo, laudoUpdateDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{idLaudo}")
     @Operation(summary = "Remover Laudo", description = "Método para remover Laudo selecionado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Laudo removido com sucesso!"),
@@ -74,8 +76,8 @@ public class LaudoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public void delete(@PathVariable @NotNull @Positive Long id) {
-        service.delete(id);
+    public void delete(@PathVariable @NotNull @Positive Long idLaudo) {
+        service.delete(idLaudo);
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
@@ -94,7 +96,7 @@ public class LaudoController {
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
-    @GetMapping("/{id}")
+    @GetMapping("/{idLaudo}")
     @Operation(summary = "Buscar Laudo por ID", description = "Método para buscar Laudo por ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Laudo localizado com sucesso!"),
@@ -103,7 +105,37 @@ public class LaudoController {
             @ApiResponse(responseCode = "403", description = "Login não autorizado"),
             @ApiResponse(responseCode = "500", description = "Erro no servidor")
     })
-    public LaudoDTO findById(@PathVariable @NotNull @Positive Long id) {
-        return service.findById(id);
+    public LaudoDTO findById(@PathVariable @NotNull @Positive Long idLaudo) {
+        return service.findById(idLaudo);
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
+    @GetMapping("/{idLaudo}/pdf")
+    @Operation(summary = "Gerar PDF do Laudo", description = "Método para gerar o arquivo PDF do laudo selecionado")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "PDF gerado com sucesso!"),
+            @ApiResponse(responseCode = "404", description = "Laudo não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro ao processar o PDF")
+    })
+    public ResponseEntity<byte[]> gerarPdf(@PathVariable @NotNull @Positive Long idLaudo) {
+        try {
+            byte[] pdfContents = service.gerarPdfDoLaudo(idLaudo);
+
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+
+            // "inline" abre no navegador, "attachment" forçaria o download direto
+            headers.add("Content-Disposition", "inline; filename=laudo_" + idLaudo + ".pdf");
+            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+            return ResponseEntity.ok()
+                    .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
+                    // O header abaixo diz ao navegador: "Apenas exiba este PDF"
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=laudo_" + idLaudo + ".pdf")
+                    .body(pdfContents);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/locais")
+@RequestMapping("/locais")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Local", description = "Método para salvar, editar, listar e remover dados do local de realização do exame")

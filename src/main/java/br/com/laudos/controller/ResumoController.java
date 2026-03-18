@@ -25,7 +25,7 @@ import java.util.List;
 
 @Validated
 @RestController
-@RequestMapping("/api/resumos")
+@RequestMapping("/resumos")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Resumos Clínicos", description = "Método para salvar, editar, listar e remover dados de frases de Resumos Clínicos")

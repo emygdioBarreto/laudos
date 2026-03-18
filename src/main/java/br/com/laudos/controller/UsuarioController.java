@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/usuario")
+@RequestMapping("/usuario")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 @Tag(name = "usuario", description = "Método para criação, manutenção e remoção de um usuário no sistema")

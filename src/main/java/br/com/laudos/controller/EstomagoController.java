@@ -19,9 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Valid
 @RestController
-@RequestMapping("/api/estomagos")
+@RequestMapping("/estomago")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Estômago", description = "Método para salvar, editar, listar e remover dados de frases de Estômago")
@@ -89,6 +91,20 @@ public class EstomagoController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
+    @GetMapping("/frases")
+    @Operation(summary = "Listar Estomagos", description = "Método para Listar todas as frases de Estomagos cadastradas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de frases de Esôfagos carregadas com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga das frases de Esôfagos"),
+            @ApiResponse(responseCode = "401", description = "Login ou senha inválidos"),
+            @ApiResponse(responseCode = "403", description = "Login não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor")
+    })
+    public List<EstomagoDTO> findAll() {
+        return service.findAll();
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")

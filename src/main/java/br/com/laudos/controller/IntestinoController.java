@@ -20,9 +20,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Validated
 @RestController
-@RequestMapping("/api/intestinos")
+@RequestMapping("/intestino")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Frases de Intestino Grosso", description = "Método para salvar, editar, listar e remover dados de frases de Intestino Grosso")
@@ -33,7 +35,7 @@ public class IntestinoController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")
-    @Operation(summary = "Salvar Intestino Grosso", description = "Metodo para salvar a frase de Intestino Grosso preenchida")
+    @Operation(summary = "Salvar Intestino Grosso", description = "Método para salvar a frase de Intestino Grosso preenchida")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Frase de Intestino Grosso salva com sucesso!"),
             @ApiResponse(responseCode = "400", description = "Frase de Intestino Grosso já existe na base de dados"),
@@ -90,6 +92,20 @@ public class IntestinoController {
             @RequestParam(defaultValue = "0") @PositiveOrZero int page,
             @RequestParam(defaultValue = "10") @Positive int pageSize) {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll(page, pageSize));
+    }
+
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
+    @GetMapping("/frases")
+    @Operation(summary = "Listar Intestinos", description = "Método para Listar todas as frases de Intestinos cadastradas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de frases de Intestinos carregadas com sucesso!"),
+            @ApiResponse(responseCode = "400", description = "Ocorreu uma falha na carga das frases de Intestinos"),
+            @ApiResponse(responseCode = "401", description = "Login ou senha inválidos"),
+            @ApiResponse(responseCode = "403", description = "Login não autorizado"),
+            @ApiResponse(responseCode = "500", description = "Erro no servidor")
+    })
+    public List<IntestinoDTO> findAll() {
+        return service.findAll();
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
