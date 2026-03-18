@@ -20,7 +20,7 @@ public class Local {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_local_seq")
     @SequenceGenerator(name = "id_local_seq", allocationSize = 1)
     @Column(name = "id_local")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @NotBlank

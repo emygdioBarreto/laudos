@@ -20,11 +20,11 @@ public class Premedicacao {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_premedicacao_seq")
     @SequenceGenerator(name = "id_premedicacao_seq", allocationSize = 1)
     @Column(name = "id_premedicacao")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @NotBlank
     @Length(min = 5, max = 150)
     @Column(name = "premedicacao")
-    private String premedicacao;
+    private String descricao;
 }

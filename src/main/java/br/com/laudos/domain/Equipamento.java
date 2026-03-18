@@ -20,7 +20,7 @@ public class Equipamento {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_equipamento_seq")
     @SequenceGenerator(name = "id_equipamento_seq", allocationSize = 1)
     @Column(name = "id_equipamento")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @NotBlank

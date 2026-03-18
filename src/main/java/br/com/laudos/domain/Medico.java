@@ -17,7 +17,7 @@ import org.hibernate.validator.constraints.Length;
 public class Medico {
 
     @Id
-    @Column(name = "crm", length = 5, nullable = false)
+    @Column(name = "crm", length = 6, nullable = false)
     private String crm;
 
     @NotNull

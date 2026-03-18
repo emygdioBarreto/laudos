@@ -18,7 +18,7 @@ public class Pancrea {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_pancreas_seq")
     @SequenceGenerator(name = "id_pancreas_seq", allocationSize = 1)
     @Column(name = "id_pancreas")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @NotBlank

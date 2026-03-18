@@ -20,7 +20,7 @@ public class Resumo {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_resumo_clinico_seq")
     @SequenceGenerator(name = "id_resumo_clinico_seq", allocationSize = 1)
     @Column(name = "id_resumo")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @NotBlank

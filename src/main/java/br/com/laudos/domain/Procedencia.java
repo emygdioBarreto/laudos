@@ -20,7 +20,7 @@ public class Procedencia {
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "id_procedencia_seq")
     @SequenceGenerator(name = "id_procedencia_seq", allocationSize = 1)
     @Column(name = "id_procedencia")
-    private Integer id;
+    private Long id;
 
     @NotNull
     @NotBlank
