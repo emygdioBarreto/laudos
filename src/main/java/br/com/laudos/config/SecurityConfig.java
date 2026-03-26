@@ -51,6 +51,10 @@ public class SecurityConfig  {
                         .requestMatchers("/auth/**").permitAll() // público, acessado sem autenticação
                         //.requestMatchers("/**/auth/register").permitAll() // público, acessado sem autenticação
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/laudos/validar/**").permitAll()
+                        .requestMatchers("/api/laudos/validar/**").permitAll()
+                        .requestMatchers("/validar/**").permitAll()
+                        .requestMatchers("/laudos/validar-dados/**").permitAll()
                         .requestMatchers(WHITE_LIST_URL).permitAll()
                         .anyRequest().authenticated()
                 )
