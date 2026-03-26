@@ -1,10 +1,7 @@
 package br.com.laudos.service;
 
 import br.com.laudos.domain.*;
-import br.com.laudos.dto.LaudoCreateDTO;
-import br.com.laudos.dto.LaudoDTO;
-import br.com.laudos.dto.LaudoUpdateDTO;
-import br.com.laudos.dto.LprintDTO;
+import br.com.laudos.dto.*;
 import br.com.laudos.dto.mapper.LaudoMapper;
 import br.com.laudos.dto.mapper.LaudoRefs;
 import br.com.laudos.dto.pages.LaudoPageDTO;
@@ -27,6 +24,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -184,7 +182,7 @@ public class LaudoService {
                         new EntityNotFoundException("Tipo de Exame não encontrado: id " + id));
     }
 
-    public byte[] gerarPdfDoLaudo(Long idLaudo) throws RuntimeException, IOException {
+    public byte[] gerarPdf(Long idLaudo) throws RuntimeException, IOException {
         // 1. Busca a entidade no banco de dados
         Laudo laudo = repository.findById(idLaudo)
                 .orElseThrow(() -> new RuntimeException("Laudo não encontrado com o ID: " + idLaudo));
@@ -192,9 +190,22 @@ public class LaudoService {
         // 2. Converte para DTO usando o seu Mapper (que já tem todos os campos)
         LprintDTO dadosParaImpressao = mapearParaLprint(laudo);
 
+        // 🔐 GERAR HASH
+        String hash = (laudo.getHashValidacao() != null)
+                ? laudo.getHashValidacao()
+                : gerarHashValidacao(laudo);
+
+        // 🔗 URL DE VALIDAÇÃO (AJUSTE PARA SEU DOMÍNIO)
+        String urlValidacao = "http://projeto-ti.com/laudos/validar/" + hash;
+
+        // 📷 QR CODE
+        String qrCodeBase64 = gerarQrCodeBase64(urlValidacao);
+
         // 3. Prepara o contexto do Thymeleaf
         Context context = new Context();
         context.setVariable("laudo", dadosParaImpressao);
+        context.setVariable("qrCode", qrCodeBase64);
+        context.setVariable("urlValidacao", urlValidacao);
 
         // 4. Processa o HTML (O arquivo deve estar em: src/main/resources/templates/laudos/modelo_exame.html)
         String htmlFormatado = templateEngine.process("laudos/modelo_exame", context);
@@ -211,7 +222,7 @@ public class LaudoService {
     }
 
     /**
-     * Método auxiliar para transformar a Entidade complexa no Record flat Lprint.
+     * Metodo auxiliar para transformar a Entidade complexa no Record flat Lprint.
      * Isso isola a lógica de formatação de strings e cálculos da regra de negócio.
      */
     private LprintDTO mapearParaLprint(Laudo laudo) {
@@ -229,17 +240,69 @@ public class LaudoService {
                 laudo.getLocalExame() != null ? laudo.getLocalExame().getDescricao() : "",
                 laudo.getMedicoExecutor() != null ? laudo.getMedicoExecutor().getMedicoExecutor() : "",
                 laudo.getResumo() != null ? laudo.getResumo().getDescricao() : "",
-                laudo.getEsofago(),
-                laudo.getEstomago(),
-                laudo.getDuodeno(),
-                laudo.getIntestino(),
-                laudo.getPancreas(),
-                laudo.getSolucao(),
-                laudo.getConclusao(),
-                laudo.getObservacao(),
+                corrigirTexto(laudo.getEsofago()),
+                corrigirTexto(laudo.getEstomago()),
+                corrigirTexto(laudo.getDuodeno()),
+                corrigirTexto(laudo.getIntestino()),
+                corrigirTexto(laudo.getPancreas()),
+                corrigirTexto(laudo.getSolucao()),
+                corrigirTexto(laudo.getConclusao()),
+                corrigirTexto(laudo.getObservacao()),
                 laudo.getObservacaoClinica(),
                 laudo.getMedicoExecutor() != null ? laudo.getMedicoExecutor().getCrm() : "",
                 laudo.getTipoExame() != null ? laudo.getTipoExame().getDescricao() : ""
         );
+    }
+
+    private String corrigirTexto(String texto) {
+        if (texto == null) return null;
+
+        return texto
+                .replaceAll("\\.(\\S)", ". $1")   // adiciona espaço após ponto
+                .replaceAll("\\s+", " ")          // remove espaços duplicados
+                .trim();
+    }
+
+    private String gerarHashValidacao(Laudo laudo) {
+
+        String base = laudo.getIdLaudo()
+                + laudo.getPaciente()
+                + laudo.getDataCriacao()
+                + System.currentTimeMillis(); // garante unicidade
+
+        String hash = java.util.UUID.nameUUIDFromBytes(base.getBytes()).toString();
+
+        laudo.setHashValidacao(hash);
+        repository.save(laudo);
+
+        return hash;
+    }
+
+    private String gerarQrCodeBase64(String texto) {
+        try {
+            int width = 150;
+            int height = 150;
+
+            com.google.zxing.common.BitMatrix matrix =
+                    new com.google.zxing.qrcode.QRCodeWriter()
+                            .encode(texto, com.google.zxing.BarcodeFormat.QR_CODE, width, height);
+
+            ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
+            com.google.zxing.client.j2se.MatrixToImageWriter.writeToStream(matrix, "PNG", pngOutputStream);
+
+            return Base64.getEncoder().encodeToString(pngOutputStream.toByteArray());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao gerar QR Code", e);
+        }
+    }
+
+    /**
+     * Busca um laudo pelo hash e converte para o DTO simplificado de validação
+     */
+    public LaudoValidacaoDTO buscarDadosParaValidacao(String hash) {
+        return repository.findByHashValidacao(hash)
+                .map(mapper::toDTOValidacao) // Chama o metodo de conversão abaixo
+                .orElseThrow(() -> new EntityNotFoundException("Laudo não encontrado com o hash: " + hash));
     }
 }

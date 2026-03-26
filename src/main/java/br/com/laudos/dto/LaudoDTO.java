@@ -66,5 +66,8 @@ public class LaudoDTO {
     // Objeto TipoExame
     @NotNull Long tipoExameId;
     @NotNull String tipoExameDescricao;
+
+    // Hash de Validação
+    String hashValidacao;
 }
 

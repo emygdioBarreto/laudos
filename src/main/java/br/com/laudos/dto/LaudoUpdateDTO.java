@@ -31,5 +31,6 @@ public record LaudoUpdateDTO(
         String solucao,
         String conclusao,
         String observacao,
-        @NotNull Long tipoExameId) {
+        @NotNull Long tipoExameId,
+        String hashValidacao) {
 }

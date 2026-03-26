@@ -30,7 +30,8 @@ public record LaudoCreateDTO(
         String solucao,
         String conclusao,
         String observacao,
-        @NotNull Long tipoExameId
+        @NotNull Long tipoExameId,
+        String hashValidacao
 ) {
 }
 

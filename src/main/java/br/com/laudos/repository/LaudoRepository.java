@@ -19,5 +19,7 @@ public interface LaudoRepository extends JpaRepository<Laudo, Long> {
         """)
     Optional<Laudo> buscarCompletoPorId(@Param("idLaudo") Long idLaudo);
 
+    Optional<Laudo> findByHashValidacao(String hashValidacao);
+
 }
 

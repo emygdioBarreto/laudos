@@ -92,4 +92,14 @@ public class Laudo {
 
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
+
+    @Column(name = "hash_validacao", unique = true, length = 64, updatable = false)
+    private String hashValidacao;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.hashValidacao == null) {
+            this.hashValidacao = java.util.UUID.randomUUID().toString();
+        }
+    }
 }

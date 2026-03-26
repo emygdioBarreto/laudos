@@ -4,6 +4,7 @@ import br.com.laudos.domain.*;
 import br.com.laudos.dto.LaudoCreateDTO;
 import br.com.laudos.dto.LaudoDTO;
 import br.com.laudos.dto.LaudoUpdateDTO;
+import br.com.laudos.dto.LaudoValidacaoDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -44,7 +45,8 @@ public class LaudoMapper {
                 laudo.getConclusao(),
                 laudo.getObservacao(),
                 laudo.getTipoExame().getId(),
-                laudo.getTipoExame().getDescricao());
+                laudo.getTipoExame().getDescricao(),
+                laudo.getHashValidacao());
     }
 
     public Laudo toEntityCreate(LaudoCreateDTO dto, LaudoRefs refs) {
@@ -74,6 +76,7 @@ public class LaudoMapper {
         laudo.setSolucao(dto.solucao());
         laudo.setConclusao(dto.conclusao());
         laudo.setObservacao(dto.observacao());
+        laudo.setHashValidacao(dto.hashValidacao());
 
         return laudo;
     }
@@ -103,5 +106,21 @@ public class LaudoMapper {
         laudo.setSolucao(dto.solucao());
         laudo.setConclusao(dto.conclusao());
         laudo.setObservacao(dto.observacao());
+        laudo.setHashValidacao(dto.hashValidacao());
+    }
+
+    public LaudoValidacaoDTO toDTOValidacao(Laudo laudo) {
+        if (laudo == null) {
+            return null;
+        }
+        return LaudoValidacaoDTO.builder()
+                .paciente(laudo.getPaciente())
+                .dataExame(laudo.getDataCriacao())
+                .tipoExame(laudo.getTipoExame() != null ? laudo.getTipoExame().getDescricao() : "N/A")
+                .medico(laudo.getMedicoExecutor() != null ? laudo.getMedicoExecutor().getMedicoExecutor() : "N/A")
+                .crm(laudo.getMedicoExecutor() != null ? laudo.getMedicoExecutor().getCrm() : "N/A")
+                .status("VÁLIDO")
+                .hash(laudo.getHashValidacao())
+                .build();
     }
 }

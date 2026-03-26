@@ -1,16 +1,21 @@
 package br.com.laudos.controller;
 
 import br.com.laudos.config.SecurityConfig;
+import br.com.laudos.domain.Laudo;
 import br.com.laudos.dto.LaudoCreateDTO;
 import br.com.laudos.dto.LaudoDTO;
 import br.com.laudos.dto.LaudoUpdateDTO;
+import br.com.laudos.dto.LaudoValidacaoDTO;
+import br.com.laudos.dto.mapper.LaudoMapper;
 import br.com.laudos.dto.pages.LaudoPageDTO;
+import br.com.laudos.repository.LaudoRepository;
 import br.com.laudos.service.LaudoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,10 +24,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
-import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 @Validated
 @RestController
@@ -34,6 +42,7 @@ import java.text.ParseException;
 public class LaudoController {
 
     private final LaudoService service;
+    private final LaudoRepository repository;
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @PostMapping("/save")
@@ -61,7 +70,7 @@ public class LaudoController {
     })
     public ResponseEntity<LaudoDTO> update(
             @PathVariable @NotNull @Positive Long idLaudo,
-            @RequestBody @Valid @NotNull LaudoUpdateDTO laudoUpdateDTO) throws ParseException {
+            @RequestBody @Valid @NotNull LaudoUpdateDTO laudoUpdateDTO) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.update(idLaudo, laudoUpdateDTO));
     }
 
@@ -109,6 +118,36 @@ public class LaudoController {
         return service.findById(idLaudo);
     }
 
+    @Transactional(readOnly = true)
+    @GetMapping("/validar/{hash}")
+    public ModelAndView validarLaudo(@PathVariable String hash) {
+
+        Laudo laudo = repository.findByHashValidacao(hash)
+                .orElseThrow(() -> new RuntimeException("Laudo não encontrado"));
+
+        ModelAndView mv = new ModelAndView("validacao");
+
+        mv.addObject("paciente", laudo.getPaciente());
+        mv.addObject("data", laudo.getDataCriacao());
+        mv.addObject("medico", laudo.getMedicoExecutor().getMedicoExecutor());
+        mv.addObject("crm", laudo.getMedicoExecutor().getCrm());
+        mv.addObject("status", "VÁLIDO");
+
+        return mv;
+    }
+
+    @Transactional(readOnly = true)
+    @GetMapping("/validar-dados/{hash}")
+    @Operation(summary = "Validar Laudo via API", description = "Retorna dados simplificados para validação em modal")
+    public ResponseEntity<LaudoValidacaoDTO> validar(@PathVariable String hash) {
+        try {
+            LaudoValidacaoDTO dto = service.buscarDadosParaValidacao(hash);
+            return ResponseEntity.ok(dto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build(); // Retorna 404 se o hash não existir
+        }
+    }
+
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @GetMapping("/{idLaudo}/pdf")
     @Operation(summary = "Gerar PDF do Laudo", description = "Método para gerar o arquivo PDF do laudo selecionado")
@@ -119,23 +158,48 @@ public class LaudoController {
     })
     public ResponseEntity<byte[]> gerarPdf(@PathVariable @NotNull @Positive Long idLaudo) {
         try {
-            byte[] pdfContents = service.gerarPdfDoLaudo(idLaudo);
 
-            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
+            // 🔥 BUSCA UMA VEZ SÓ
+            LaudoDTO laudo = service.findById(idLaudo);
 
-            // "inline" abre no navegador, "attachment" forçaria o download direto
-            headers.add("Content-Disposition", "inline; filename=laudo_" + idLaudo + ".pdf");
-            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+            // 🔥 GERA PDF (se puder, passe o DTO pra evitar nova consulta interna)
+            byte[] pdfContents = service.gerarPdf(idLaudo);
+
+            // 🔥 DATA DO LAUDO
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            String dataFormatada = (laudo.getDataCriacao() != null)
+                    ? laudo.getDataCriacao().format(formatter)
+                    : LocalDate.now().format(formatter);
+
+            // 🔥 NOME FINAL BONITO
+            String nomeArquivo = "Laudo_"
+                    + normalizar(laudo.getPaciente())
+                    + "_"
+                    + idLaudo
+                    + "_"
+                    + dataFormatada
+                    + ".pdf";
 
             return ResponseEntity.ok()
                     .contentType(org.springframework.http.MediaType.APPLICATION_PDF)
-                    // O header abaixo diz ao navegador: "Apenas exiba este PDF"
-                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=laudo_" + idLaudo + ".pdf")
+                    .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=\"" + nomeArquivo + "\"")
                     .body(pdfContents);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    private String normalizar(String texto) {
+        if (texto == null) return "LAUDO";
+
+        return java.text.Normalizer.normalize(texto, java.text.Normalizer.Form.NFD)
+                .replaceAll("[^\\p{ASCII}]", "")   // remove acentos
+                .replaceAll("[^a-zA-Z0-9]", "_")   // troca caracteres inválidos
+                .replaceAll("_+", "_")             // remove duplicação
+                .toUpperCase();
     }
 }
