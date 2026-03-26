@@ -6,7 +6,6 @@ import br.com.laudos.dto.LaudoCreateDTO;
 import br.com.laudos.dto.LaudoDTO;
 import br.com.laudos.dto.LaudoUpdateDTO;
 import br.com.laudos.dto.LaudoValidacaoDTO;
-import br.com.laudos.dto.mapper.LaudoMapper;
 import br.com.laudos.dto.pages.LaudoPageDTO;
 import br.com.laudos.repository.LaudoRepository;
 import br.com.laudos.service.LaudoService;

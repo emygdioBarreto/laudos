@@ -2,7 +2,6 @@ package br.com.laudos.controller;
 
 import br.com.laudos.config.SecurityConfig;
 import br.com.laudos.dto.PremedicacaoDTO;
-import br.com.laudos.dto.ProcedenciaDTO;
 import br.com.laudos.dto.pages.PremedicacaoPageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.service.PremedicacaoService;

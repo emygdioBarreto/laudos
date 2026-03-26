@@ -2,7 +2,6 @@ package br.com.laudos.service;
 
 import br.com.laudos.domain.Premedicacao;
 import br.com.laudos.dto.PremedicacaoDTO;
-import br.com.laudos.dto.ProcedenciaDTO;
 import br.com.laudos.dto.mapper.PremedicacaoMapper;
 import br.com.laudos.dto.pages.PremedicacaoPageDTO;
 import br.com.laudos.exceptions.RecordNotFoundException;

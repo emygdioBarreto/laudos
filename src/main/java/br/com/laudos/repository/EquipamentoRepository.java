@@ -1,7 +1,6 @@
 package br.com.laudos.repository;
 
 import br.com.laudos.domain.Equipamento;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
