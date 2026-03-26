@@ -1,49 +1,113 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="pt-BR" xml:lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <title th:text="'Laudo #' + ${laudo.laudoId} + ' - ' + ${laudo.paciente}">
+        Laudo Médico
+    </title>
     <style>
-        @page { size: A4; margin: 1.2cm 1.5cm; }
-        body { font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.3; font-size: 10.5pt; }
-        .header { border-bottom: 2px solid #6f7895; margin-bottom: 15px; padding-bottom: 5px; }
-        .titulo-exame { text-align: center; color: #6f7895; font-size: 14pt; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+        @page {size: A4; margin: 1.2cm 1.0cm; @bottom-center {content: element(footer);}}
+        body {font-family: 'Helvetica', 'Arial', sans-serif; color: #333; font-size: 9.5pt; line-height: 1.5; word-wrap: break-word; overflow-wrap: break-word;}
+        .header {border-bottom: 2px solid #6f7895; margin-bottom: 15px; padding-bottom: 5px;}
+        .titulo-exame {text-align: center; color: #6f7895; font-size: 14pt; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        .dados-paciente { display: table; width: 100%; margin-bottom: 15px; font-size: 9.5pt; border: 1px solid #eee; padding: 8px; background-color: #fafafa; }
-        .linha { display: table-row; }
-        .coluna { display: table-cell; padding: 1px 5px; }
+        /* ===== DADOS DO PACIENTE ===== */
+        .dados-paciente {display: table; width: 100%; margin-bottom: 15px; font-size: 8.5pt; border: 1px solid #eee; background-color: #fafafa; table-layout: fixed; border-spacing: 0;}
+        .linha {display: table-row;}
+        .coluna {display: table-cell; width: 50%; padding: 4px 8px; vertical-align: top; word-break: break-word;}
+        .espaco {display: inline-block; width: 20px;}
 
-        .secao { margin-top: 10px; }
-        .titulo-secao { color: #6f7895; font-weight: bold; border-left: 3px solid #6f7895; padding-left: 6px; margin-bottom: 3px; text-transform: uppercase; font-size: 10pt; }
-        .texto-conteudo { text-align: justify; margin-bottom: 8px; white-space: pre-wrap; }
+        /* ===== SEÇÕES ===== */
+        .secao {margin-top: 12px; page-break-inside: avoid;}
+        .titulo-secao {color: #6f7895; font-weight: bold; border-left: 3px solid #6f7895; padding-left: 6px; margin-bottom: 5px; text-transform: uppercase; font-size: 10pt; letter-spacing: 0.5px;}
+        .texto-conteudo {text-align: justify; margin-bottom: 10px; white-space: pre-wrap; line-height: 1.5;}
 
-        .rodape { position: running(footer); text-align: center; font-size: 8.5pt; color: #777; border-top: 1px solid #eee; margin-top: 20px; padding-top: 5px; }
+        /* ===== CONCLUSÃO DESTACADA ===== */
+        .conclusao {font-weight: bold;}
+
+        /* ===== RODAPÉ ===== */
+        .rodape {text-align: center; font-size: 9pt; color: #444; padding-top: 10px;}
+        .assinatura {margin-top: 50px; text-align: center; page-break-inside: avoid;}
+        .assinatura-linha {width: 300px; margin: 40px auto 8px auto; border-top: 1px solid #000;}
+        .assinatura-nome {font-weight: bold;}
+        .assinatura-crm {font-size: 8.5pt; color: #666;}
+
+        /* Container do Fechamento (Assinatura + Validação) */
+        .fechamento-container {display: table; width: 100%; margin-top: 30px; page-break-inside: avoid;}
+        .assinatura-lado {display: table-cell; width: 60%; vertical-align: bottom; text-align: left; padding-bottom: 10px;}
+        .validacao-lado {display: table-cell; width: 40%; vertical-align: bottom; text-align: right; font-size: 7.5pt; line-height: 1.2;}
+        .assinatura-linha-curta {width: 250px; border-top: 1px solid #000; margin-bottom: 5px;}
+        .qrcode-img {width: 70px; height: 70px; margin-bottom: 5px;}
+        .url-validacao {display: block; word-break: break-all; color: #666; margin-top: 2px;}
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="titulo-exame" th:text="${laudo.equipamento}">EXAME</div>
+    <div class="titulo-exame" th:text="${laudo.tipoExameDescricao}">EXAME</div>
 </div>
 
 <div class="dados-paciente">
+
     <div class="linha">
         <div class="coluna"><strong>Paciente:</strong> <span th:text="${laudo.paciente}"></span></div>
-        <div class="coluna"><strong>Idade:</strong> <span th:text="${laudo.idade}"></span></div>
-        <div class="coluna"><strong>Sexo:</strong> <span th:text="${laudo.sexo}"></span></div>
+        <div class="coluna">
+            <strong>Idade:</strong> <span th:text="${laudo.idade}"></span>
+            <span class="espaco"></span>
+            <strong>Sexo:</strong> <span th:text="${laudo.sexo}"></span>
+        </div>
     </div>
+
     <div class="linha">
-        <div class="coluna"><strong>Data:</strong> <span th:text="${#temporals.format(laudo.data, 'dd/MM/yyyy')}"></span></div>
-        <div class="coluna"><strong>Médico:</strong> <span th:text="${laudo.medicoExecutor}"></span></div>
-        <div class="coluna"><strong>Procedência:</strong> <span th:text="${laudo.procedenciaDescricao}"></span></div>
+        <div class="coluna">
+            <strong>Data Nascimento:</strong>
+            <span th:text="${#temporals.format(laudo.nascimento, 'dd/MM/yyyy')}"></span>
+        </div>
+        <div class="coluna">
+            <strong>Solicitante:</strong> <span th:text="${laudo.solicitante}"></span>
+        </div>
     </div>
+
+    <div class="linha">
+        <div class="coluna">
+            <strong>Procedência:</strong> <span th:text="${laudo.procedenciaDescricao}"></span>
+        </div>
+        <div class="coluna">
+            <strong>Local:</strong> <span th:text="${laudo.localexameDescricao}"></span>
+        </div>
+    </div>
+
+    <div class="linha">
+        <div class="coluna">
+            <strong>Executor:</strong> <span th:text="${laudo.medicoExecutor}"></span>
+        </div>
+        <div class="coluna">
+            <strong>Data Laudo:</strong>
+            <span th:text="${#temporals.format(laudo.data, 'dd/MM/yyyy')}"></span>
+        </div>
+    </div>
+
+    <div class="linha">
+        <div class="coluna">
+            <strong>Equip.:</strong> <span th:text="${laudo.equipamento}"></span>
+        </div>
+        <div class="coluna">
+            <strong>Premedicação:</strong> <span th:text="${laudo.premedicacaoDescricao}"></span>
+        </div>
+    </div>
+
+    <div class="linha">
+        <div class="coluna">
+            <strong>Resumo:</strong> <span th:text="${laudo.resumo}"></span>
+        </div>
+        <div class="coluna">
+            <strong>Obs. Clínica:</strong> <span th:text="${laudo.obsclin}"></span>
+        </div>
+    </div>
+
 </div>
 
 <div class="corpo-laudo">
-    <div class="secao" th:if="${laudo.resumo != null && !laudo.resumo.isEmpty()}">
-        <div class="titulo-secao">Resumo Clínico</div>
-        <div class="texto-conteudo" th:text="${laudo.resumo}"></div>
-    </div>
-
     <div class="secao" th:if="${laudo.esofago != null && !laudo.esofago.isEmpty()}">
         <div class="titulo-secao">Esôfago</div>
         <div class="texto-conteudo" th:text="${laudo.esofago}"></div>
@@ -80,8 +144,50 @@
     </div>
 </div>
 
-<div class="rodape">
-    Laudo gerado eletronicamente por <span th:text="${laudo.medicoExecutor}"></span> - CRM: <span th:text="${laudo.crm}"></span>
+<!--<div style="margin-top: 30px; text-align: center; page-break-inside: avoid;">
+    <p><strong>Valide este documento:</strong></p>
+
+    <img th:src="'data:image/png;base64,' + ${qrCode}" alt="QRCode de Validação" width="120" src=""/>
+
+    <p style="font-size: 10px;" th:text="${urlValidacao}"></p>
+</div>
+
+<div class="assinatura">
+    <div class="assinatura-linha"></div>
+
+    <div class="assinatura-nome">
+        <span th:text="${laudo.medicoExecutor}"></span>
+    </div>
+
+    <div class="assinatura-crm">
+        CRM: <span th:text="${laudo.crm}"></span>
+    </div>
+</div>-->
+
+<div class="fechamento-container">
+
+    <div class="assinatura-lado">
+        <div class="assinatura-linha-curta"></div>
+        <div class="assinatura-nome" th:text="${laudo.medicoExecutor}">Dr. Médico</div>
+        <div class="assinatura-crm">CRM: <span th:text="${laudo.crm}">0000</span></div>
+    </div>
+
+    <div class="validacao-lado">
+        <strong>Valide este documento:</strong><br/>
+        <img class="qrcode-img" th:src="'data:image/png;base64,' + ${qrCode}" alt="QR" />
+        <span class="url-validacao">
+            projeto-ti.com/laudos/validar/<br/>
+            <strong class="hash-destaque"
+                    th:text="${#strings.substringAfter(urlValidacao, 'validar/')}">
+                3e4ba955-b28e-310e-9087-8c995535bdbe
+            </strong>
+        </span>
+    </div>
+
+</div>
+
+<div class="footer" style="position: running(footer); text-align: center; font-size: 8pt; color: #666;">
+    Autenticidade deste laudo pode ser verificada em: projeto-ti.com/validar
 </div>
 
 </body>
