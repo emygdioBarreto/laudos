@@ -17,7 +17,7 @@ spring:
       static-locations: file:/opt/sistema/laudos/angular17/
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_laudos
+    url: jdbc:postgresql://129.121.37.75:5432/db_laudos
     username: sistema_user
     password: skxiev6z   #${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
