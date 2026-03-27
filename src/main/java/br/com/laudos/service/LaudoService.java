@@ -26,6 +26,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -182,21 +183,31 @@ public class LaudoService {
                         new EntityNotFoundException("Tipo de Exame não encontrado: id " + id));
     }
 
+    @Transactional
     public byte[] gerarPdf(Long idLaudo) throws RuntimeException, IOException {
         // 1. Busca a entidade no banco de dados
         Laudo laudo = repository.findById(idLaudo)
-                .orElseThrow(() -> new RuntimeException("Laudo não encontrado com o ID: " + idLaudo));
+                .orElseThrow(() -> new EntityNotFoundException("Laudo não encontrado: " + idLaudo));
 
-        // 2. Converte para DTO usando o seu Mapper (que já tem todos os campos)
+        // 2. Saneamento e Persistência Imediata
+        if (laudo.getHashValidacao() == null || laudo.getHashValidacao().isBlank()) {
+            String novoHash = UUID.randomUUID().toString();
+            laudo.setHashValidacao(novoHash);
+
+            // 🔥 AJUSTE 1: Use saveAndFlush para garantir que o Hibernate envie o UPDATE
+            // para o Postgres imediatamente e limpe o cache da sessão.
+            laudo = repository.saveAndFlush(laudo);
+        }
+
+        // 🔥 AJUSTE 2: Use o hash que JÁ ESTÁ na entidade persistida.
+        // Evite chamar gerarHashValidacao(laudo) novamente para não criar um hash volátil.
+        String hashOficial = laudo.getHashValidacao();
+
+        // 2. Converte para DTO usando o seu Mapper
         LprintDTO dadosParaImpressao = mapearParaLprint(laudo);
 
-        // 🔐 GERAR HASH
-        String hash = (laudo.getHashValidacao() != null)
-                ? laudo.getHashValidacao()
-                : gerarHashValidacao(laudo);
-
-        // 🔗 URL DE VALIDAÇÃO (AJUSTE PARA SEU DOMÍNIO)
-        String urlValidacao = "http://projeto-ti.com/laudos/validar/" + hash;
+        // 🔗 URL DE VALIDAÇÃO
+        String urlValidacao = "http://projeto-ti.com/laudos/api/laudos/validar/" + hashOficial;
 
         // 📷 QR CODE
         String qrCodeBase64 = gerarQrCodeBase64(urlValidacao);
@@ -207,7 +218,7 @@ public class LaudoService {
         context.setVariable("qrCode", qrCodeBase64);
         context.setVariable("urlValidacao", urlValidacao);
 
-        // 4. Processa o HTML (O arquivo deve estar em: src/main/resources/templates/laudos/modelo_exame.html)
+        // 4. Processa o HTML
         String htmlFormatado = templateEngine.process("laudos/modelo_exame", context);
 
         // 5. Gera o PDF via OpenHTMLtoPDF
@@ -217,6 +228,8 @@ public class LaudoService {
             builder.withHtmlContent(htmlFormatado, "/");
             builder.toStream(outputStream);
             builder.run();
+
+            // 🔥 AJUSTE 3: O byte[] retornado aqui deve ser o passo final.
             return outputStream.toByteArray();
         }
     }
@@ -261,21 +274,6 @@ public class LaudoService {
                 .replaceAll("\\.(\\S)", ". $1")   // adiciona espaço após ponto
                 .replaceAll("\\s+", " ")          // remove espaços duplicados
                 .trim();
-    }
-
-    private String gerarHashValidacao(Laudo laudo) {
-
-        String base = laudo.getIdLaudo()
-                + laudo.getPaciente()
-                + laudo.getDataCriacao()
-                + System.currentTimeMillis(); // garante unicidade
-
-        String hash = java.util.UUID.nameUUIDFromBytes(base.getBytes()).toString();
-
-        laudo.setHashValidacao(hash);
-        repository.save(laudo);
-
-        return hash;
     }
 
     private String gerarQrCodeBase64(String texto) {

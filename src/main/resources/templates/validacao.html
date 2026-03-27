@@ -23,7 +23,7 @@
 
     <div class="info">
         <p><strong>Paciente:</strong> <span th:text="${paciente}"></span></p>
-        <p><strong>Data:</strong> <span th:text="${#temporals.format(data, 'dd/MM/yyyy')}"></span></p>
+        <p><strong>Data:</strong> <span th:text="${#temporals.format(dataCriacao, 'dd/MM/yyyy')}"></span></p>
         <p><strong>Médico:</strong> <span th:text="${medico}"></span></p>
         <p><strong>CRM:</strong> <span th:text="${crm}"></span></p>
     </div>

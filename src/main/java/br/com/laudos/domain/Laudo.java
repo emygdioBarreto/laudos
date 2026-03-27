@@ -93,7 +93,7 @@ public class Laudo {
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
 
-    @Column(name = "hash_validacao", unique = true, length = 64, updatable = false)
+    @Column(name = "hash_validacao", unique = true, length = 64)
     private String hashValidacao;
 
     @PrePersist
