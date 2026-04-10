@@ -60,3 +60,7 @@ management:
     web:
       exposure:
         include: health,info
+
+# CONFIGURAÇÃO DE VALIDAÇÃO (NOVO)
+app:
+  urlValidacao: https://projeto-ti.com/certificados/

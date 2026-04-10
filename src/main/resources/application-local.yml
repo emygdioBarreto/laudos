@@ -19,3 +19,7 @@ spring:
       ddl-auto: update
     show-sql: true
     open-in-view: false
+
+# CONFIGURAÇÃO DE VALIDAÇÃO (NOVO)
+app:
+  urlValidacao: http://192.168.255.102:8084/certificados/
