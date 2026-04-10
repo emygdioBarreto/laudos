@@ -13,6 +13,11 @@ public class GlobalExceptionHandler {
 
     private static final String ERROR = "Erro: ";
 
+    @ExceptionHandler(LaudoServiceException.class)
+    public ResponseEntity<String> handleLaudoServiceException(LaudoServiceException e) {
+        return new ResponseEntity<>(ERROR.concat(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @ExceptionHandler
     public ResponseEntity<String> handlerIllegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(ERROR.concat(e.getMessage()), HttpStatus.BAD_REQUEST);
@@ -26,5 +31,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<String> handlerRuntimeException(ParseException e) {
         return new ResponseEntity<>(ERROR.concat(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    public static class LaudoServiceException extends RuntimeException {
+        public LaudoServiceException(String message) {
+            super(message);
+        }
+        public LaudoServiceException(String message, Throwable cause) {
+            super(message, cause);
+        }
     }
 }
