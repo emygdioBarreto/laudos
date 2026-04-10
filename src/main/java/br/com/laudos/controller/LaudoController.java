@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -24,20 +25,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-@Validated
 @RestController
 @RequestMapping("/laudos")
 @RequiredArgsConstructor
 @CrossOrigin("*")
 @Tag(name = "Laudos", description = "Método para salvar, editar, listar e remover Laudos")
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class LaudoController {
 
     private final LaudoService service;
@@ -118,9 +115,28 @@ public class LaudoController {
     }
 
     @Transactional(readOnly = true)
-    @GetMapping("/validar/{hash}")
-    public ModelAndView validarLaudo(@PathVariable String hash) {
+    @GetMapping("/validar-dados/{hash}")
+    @Operation(summary = "Validar Laudo via API", description = "Retorna dados simplificados para validação em modal")
+    public ResponseEntity<LaudoValidacaoDTO> validar(@PathVariable String hash) {
+        try {
+            LaudoValidacaoDTO dto = service.buscarDadosParaValidacao(hash);
+            return ResponseEntity.ok(dto);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build(); // Retorna 404 se o hash não existir
+        }
+    }
 
+    /*@Transactional(readOnly = true)
+    @GetMapping("/validar-externo/{hash}")
+    @Operation(summary = "Validar Laudo via API",
+            description = "Retorna dados simplificados para validação em modal")
+    @ApiResponse(responseCode = "200", description = "Laudo encontrado e válido")
+    @ApiResponse(responseCode = "404", description = "Hash não encontrado")
+    @ApiResponse(responseCode = "400", description = "Hash inválido")
+    public ModelAndView validarExterno(
+            @PathVariable
+            @Pattern(regexp = "^[a-zA-Z0-9\\-]{32,}$", message = "Hash inválido")
+            String hash) {
         Laudo laudo = repository.findByHashValidacao(hash)
                 .orElseThrow(() -> new RuntimeException("Laudo não encontrado"));
 
@@ -133,19 +149,7 @@ public class LaudoController {
         mv.addObject("status", "VÁLIDO");
 
         return mv;
-    }
-
-    @Transactional(readOnly = true)
-    @GetMapping("/validar-dados/{hash}")
-    @Operation(summary = "Validar Laudo via API", description = "Retorna dados simplificados para validação em modal")
-    public ResponseEntity<LaudoValidacaoDTO> validar(@PathVariable String hash) {
-        try {
-            LaudoValidacaoDTO dto = service.buscarDadosParaValidacao(hash);
-            return ResponseEntity.ok(dto);
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.notFound().build(); // Retorna 404 se o hash não existir
-        }
-    }
+    }*/
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MEDICO')")
     @GetMapping("/{idLaudo}/pdf")

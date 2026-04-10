@@ -5,6 +5,7 @@ import br.com.laudos.dto.*;
 import br.com.laudos.dto.mapper.LaudoMapper;
 import br.com.laudos.dto.mapper.LaudoRefs;
 import br.com.laudos.dto.pages.LaudoPageDTO;
+import br.com.laudos.exceptions.GlobalExceptionHandler;
 import br.com.laudos.exceptions.RecordNotFoundException;
 import br.com.laudos.repository.*;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
@@ -14,6 +15,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -47,9 +49,12 @@ public class LaudoService {
     private final LaudoMapper mapper;
     private final SpringTemplateEngine templateEngine;
 
+    // Injeta a URL configurada nos arquivos YML
+    @Value("${app.urlValidacao}")
+    private String urlBaseCertificado;
+
     @Transactional
     public LaudoDTO salvar(@Valid @NotNull LaudoCreateDTO createDTO) {
-
         LaudoRefs relacoes = resolveRelacionamentosValidados(createDTO);
         Laudo laudo = mapper.toEntityCreate(createDTO, relacoes);
         return mapper.toDTO(repository.save(laudo));
@@ -85,7 +90,7 @@ public class LaudoService {
     // RESOLVERS
     // =========================
     private LaudoRefs resolveRelacionamentosValidados(LaudoCreateDTO dto) {
-        return resolveRelacionamentosValidados(
+        return resolveRelacionamentosValidados(new LaudoIdsDTO(
                 dto.equipamentoId(),
                 dto.solicitanteId(),
                 dto.procedenciaId(),
@@ -94,11 +99,11 @@ public class LaudoService {
                 dto.tipoExameId(),
                 dto.medicoExecutorCrm(),
                 dto.resumoId()
-        );
+        ));
     }
 
     private LaudoRefs resolveRelacionamentosValidados(LaudoUpdateDTO dto) {
-        return resolveRelacionamentosValidados(
+        return resolveRelacionamentosValidados(new LaudoIdsDTO(
                 dto.equipamentoId(),
                 dto.solicitanteId(),
                 dto.procedenciaId(),
@@ -107,28 +112,19 @@ public class LaudoService {
                 dto.tipoExameId(),
                 dto.medicoExecutorCrm(),
                 dto.resumoId()
-        );
+        ));
     }
 
-    private LaudoRefs resolveRelacionamentosValidados(
-            Long equipamentoId,
-            Long solicitanteId,
-            Long procedenciaId,
-            Long premedicacaoId,
-            Long localExameId,
-            Long tipoExameId,
-            String medicoExecutorCrm,
-            Long resumoId
-    ) {
+    private LaudoRefs resolveRelacionamentosValidados(LaudoIdsDTO idsDTO) {
         return new LaudoRefs(
-                loadEquipamento(equipamentoId),
-                loadSolicitante(solicitanteId),
-                loadProcedencia(procedenciaId),
-                loadPremedicacao(premedicacaoId),
-                loadLocal(localExameId),
-                loadTipoExame(tipoExameId),
-                loadMedico(medicoExecutorCrm),
-                loadResumo(resumoId)
+                loadEquipamento(idsDTO.equipamentoId()),
+                loadSolicitante(idsDTO.solicitanteId()),
+                loadProcedencia(idsDTO.procedenciaId()),
+                loadPremedicacao(idsDTO.premedicacaoId()),
+                loadLocal(idsDTO.localExameId()),
+                loadTipoExame(idsDTO.tipoExameId()),
+                loadMedico(idsDTO.medicoExecutorCrm()),
+                loadResumo(idsDTO.resumoId())
         );
     }
 
@@ -184,7 +180,7 @@ public class LaudoService {
     }
 
     @Transactional
-    public byte[] gerarPdf(Long idLaudo) throws RuntimeException, IOException {
+    public byte[] gerarPdf(Long idLaudo) throws IOException {
         // 1. Busca a entidade no banco de dados
         Laudo laudo = repository.findById(idLaudo)
                 .orElseThrow(() -> new EntityNotFoundException("Laudo não encontrado: " + idLaudo));
@@ -193,43 +189,35 @@ public class LaudoService {
         if (laudo.getHashValidacao() == null || laudo.getHashValidacao().isBlank()) {
             String novoHash = UUID.randomUUID().toString();
             laudo.setHashValidacao(novoHash);
-
-            // 🔥 AJUSTE 1: Use saveAndFlush para garantir que o Hibernate envie o UPDATE
-            // para o Postgres imediatamente e limpe o cache da sessão.
             laudo = repository.saveAndFlush(laudo);
         }
 
-        // 🔥 AJUSTE 2: Use o hash que JÁ ESTÁ na entidade persistida.
-        // Evite chamar gerarHashValidacao(laudo) novamente para não criar um hash volátil.
         String hashOficial = laudo.getHashValidacao();
 
-        // 2. Converte para DTO usando o seu Mapper
+        // Converte para DTO
         LprintDTO dadosParaImpressao = mapearParaLprint(laudo);
 
-        // 🔗 URL DE VALIDAÇÃO
-        String urlValidacao = "http://projeto-ti.com/laudos/api/laudos/validar/" + hashOficial;
+        // Usa a URL dinâmica injetada do YML
+        String urlValidacao = urlBaseCertificado + hashOficial;
 
-        // 📷 QR CODE
+        // QR CODE (Gera o QRCode com a nova URL)
         String qrCodeBase64 = gerarQrCodeBase64(urlValidacao);
 
-        // 3. Prepara o contexto do Thymeleaf
+        // Prepara o contexto do Thymeleaf
         Context context = new Context();
         context.setVariable("laudo", dadosParaImpressao);
         context.setVariable("qrCode", qrCodeBase64);
         context.setVariable("urlValidacao", urlValidacao);
 
-        // 4. Processa o HTML
+        // Processa o HTML e gera o PDF (Restante do seu código...)
         String htmlFormatado = templateEngine.process("laudos/modelo_exame", context);
 
-        // 5. Gera o PDF via OpenHTMLtoPDF
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             PdfRendererBuilder builder = new PdfRendererBuilder();
             builder.useFastMode();
             builder.withHtmlContent(htmlFormatado, "/");
             builder.toStream(outputStream);
             builder.run();
-
-            // 🔥 AJUSTE 3: O byte[] retornado aqui deve ser o passo final.
             return outputStream.toByteArray();
         }
     }
@@ -291,7 +279,7 @@ public class LaudoService {
             return Base64.getEncoder().encodeToString(pngOutputStream.toByteArray());
 
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao gerar QR Code", e);
+            throw new GlobalExceptionHandler.LaudoServiceException("Erro ao gerar QR Code", e);
         }
     }
 

@@ -155,10 +155,11 @@
     <div class="validacao-lado">
         <strong>Valide este documento:</strong><br/>
         <img class="qrcode-img" th:src="'data:image/png;base64,' + ${qrCode}" alt="QR" />
-        <span class="url-validacao">
-            projeto-ti.com/laudos/api/laudos/validar/<br/>
+
+        <span class="urlValidacao">
+            Código de Verificação:<br/>
             <strong class="hash-destaque"
-                    th:text="${#strings.substringAfter(urlValidacao, 'validar/')}">
+                    th:text="${#strings.substringAfter(urlValidacao, 'certificados/')}">
                 3e4ba955-b28e-310e-9087-8c995535bdbe
             </strong>
         </span>
@@ -167,7 +168,8 @@
 </div>
 
 <div class="footer" style="position: running(footer); text-align: center; font-size: 8pt; color: #666;">
-    Autenticidade deste laudo pode ser verificada em: projeto-ti.com/laudos/api/laudos/validar/{código de verificação}
+    A autenticidade deste laudo pode ser verificada em:
+    <span th:text="${urlValidacao}">http://localhost:8084/certificados/...</span>
 </div>
 
 </body>
